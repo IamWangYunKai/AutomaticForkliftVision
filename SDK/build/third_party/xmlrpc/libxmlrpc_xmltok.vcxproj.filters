@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\lib\expat\xmltok\xmlrole.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\lib\expat\xmltok\xmltok.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\include\xmlrpc-c\base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\include\xmlrpc-c\base_int.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\include\xmlrpc-c\c_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\include\xmlrpc-c\config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\src\double.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\src\parse_datetime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\src\parse_value.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\src\registry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\src\system_method.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\include\xmlrpc-c\string_int.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\include\xmlrpc-c\util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\xmlrpc_config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\include\xmlrpc-c\client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\include\xmlrpc-c\client_global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\lib\abyss\src\pthreadx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\include\xmlrpc-c\server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\include\xmlrpc-c\base64_int.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\include\xmlrpc-c\select_int.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\include\xmlrpc-c\sleep_int.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\include\xmlrpc-c\string_number.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\include\xmlrpc-c\time_int.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\lib\expat\xmlparse\xmlparse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\lib\expat\xmltok\asciitab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\lib\expat\xmltok\iasciitab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\lib\expat\xmltok\latin1tab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\lib\expat\xmltok\nametab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\lib\expat\xmltok\utf8tab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\lib\expat\xmltok\xmldef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\lib\expat\xmltok\xmlrole.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\lib\expat\xmltok\xmltok.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Seer\PCS\SDK\code\third_party\xmlrpc\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{A84BC4CC-584C-3309-910B-2D034F5CB26E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{BB8F94D2-2A82-3579-BC7E-45388A9724B0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,1 @@
+This folder shall contains header files of test cass defined using gtest.
