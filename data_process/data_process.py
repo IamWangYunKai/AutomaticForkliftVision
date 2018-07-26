@@ -35,19 +35,18 @@ def process_data(filename):
             else:
                 break
         # read data over
-        pass
+        for i in range(len(dist)):
+            if z[i] > 2.0:
+                x[i] = y[i] = z[i] = 0
     
-    
-if __name__ == '__main__':
-    filename = 'data.txt'
-    process_data(filename)
+def show_img():
     trace = go.Scatter3d(
         x=x,
         y=y,
         z=z,
         mode='markers',
         marker=dict(
-            size=2,
+            size=3,
             color=z,                # set color to an array/list of desired values
             colorscale='Viridis',   # choose a colorscale
             opacity=0.6,            #不透明度
@@ -66,3 +65,8 @@ if __name__ == '__main__':
     )
     fig = go.Figure(data=data, layout=layout)
     plotly.offline.plot(fig, filename='3D-Point-Cloud.html')
+    
+if __name__ == '__main__':
+    filename = 'data.txt'
+    process_data(filename)
+    show_img()

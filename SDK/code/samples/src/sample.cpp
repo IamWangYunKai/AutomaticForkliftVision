@@ -9,7 +9,7 @@
 #define PROC_PLUGIN "O3D3xxProc.W32.ppp"
 #define PROC_PARAM ""
 
-#define EXPOSURE 2000
+#define EXPOSURE 1
 
 using namespace std;
 
@@ -179,7 +179,7 @@ int main(void)
 	}
 
 	outfile.close(); // close file
-					 /*******************************************************************************/
+	/*******************************************************************************/
 	printf("\n -----------------------------------------------------------------------------");
 	printf("\n Setting and getting parameters viz : integrationTime \n");
 	res = pmdSetIntegrationTime(hnd, 0, EXPOSURE);
