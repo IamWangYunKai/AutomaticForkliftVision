@@ -11,7 +11,7 @@ Choose your source code path:  PCS\SDK\code
 
 Choose your build path:  PCS\SDK\build
 
-Click "Configure" and choose only "O#D#XX_SAMPLE_CODES_BUILD_ALL"
+Click "Configure" , choose VS2015 32 bit compiler (Not 64 bit ! ) and choose only "O#D#XX_SAMPLE_CODES_BUILD_ALL"
 
 Then generate it and open this project in VS2015
 
@@ -21,3 +21,6 @@ Find sample.cpp in SampleO3D3xxCamera and change your camera's Ip adrdess, for e
 #define SOURCE_PARAM "169.254.130.223:80:50010"
 ```
 
+Compile all projects and find PCS\SDK\build\bin\Release\LightVis\LightVis.exe
+
+Change your camera IP in lv.cfg (in the same path with LightVis.exe) and then just open LightVis.exe !
