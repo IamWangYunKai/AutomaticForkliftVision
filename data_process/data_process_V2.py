@@ -62,9 +62,9 @@ def show_img():
         )
     )
     fig = go.Figure(data=data, layout=layout)
-    plotly.offline.plot(fig, filename='3D-Point-Cloud-V1.html')
+    plotly.offline.plot(fig, filename='6.html')
     
 if __name__ == '__main__':
-    filename = 'data.pcd'
+    filename = '6.pcd'
     process_data(filename)
     show_img()
