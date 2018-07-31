@@ -29,6 +29,8 @@ int main()
 	return 0;
 }
 */
+#include <windows.h> //加上这一句，注意头文件的顺序
+
 
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/io/pcd_io.h>
@@ -43,9 +45,14 @@ int main()
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/console/print.h>
 #include <pcl/console/parse.h>
-//#include "vtkAutoInit.h" 
-//VTK_MODULE_INIT(vtkRenderingOpenGL); // VTK was built with vtkRenderingOpenGL2
-//VTK_MODULE_INIT(vtkInteractionStyle);
+
+//#pragma comment(lib, "opengl32")
+//#pragma comment(lib, "glu32")
+#include <gl/gl.h>
+#include <gl/glu.h>
+#include "vtkAutoInit.h" 
+VTK_MODULE_INIT(vtkRenderingOpenGL); // VTK was built with vtkRenderingOpenGL2
+VTK_MODULE_INIT(vtkInteractionStyle);
 
 inline double
 uniform_deviate(int seed)
@@ -204,6 +211,7 @@ printHelp(int, char **argv)
 int
 main(int argc, char **argv)
 {
+	printf("begin...\n");
 	print_info("Convert a CAD model to a point cloud using uniform sampling. For more information, use: %s -h\n",
 		argv[0]);
 
@@ -221,7 +229,7 @@ main(int argc, char **argv)
 	bool vis_result = !find_switch(argc, argv, "-no_vis_result");
 	const bool write_normals = find_switch(argc, argv, "-write_normals");
 	const bool write_colors = find_switch(argc, argv, "-write_colors");
-
+	printf("1\n");
 	// Parse the command line arguments for .ply and PCD files
 	std::vector<int> pcd_file_indices = parse_file_extension_argument(argc, argv, ".pcd");
 	if (pcd_file_indices.size() != 1)
@@ -251,7 +259,7 @@ main(int argc, char **argv)
 		readerQuery->Update();
 		polydata1 = readerQuery->GetOutput();
 	}
-
+	printf("2\n");
 	//make sure that the polygons are triangles!
 	vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
 #if VTK_MAJOR_VERSION < 6
@@ -267,7 +275,7 @@ main(int argc, char **argv)
 	polydata1 = triangleMapper->GetInput();
 
 	bool INTER_VIS = false;
-
+	printf("3\n");
 	if (INTER_VIS)
 	{
 		visualization::PCLVisualizer vis;
@@ -275,10 +283,10 @@ main(int argc, char **argv)
 		vis.setRepresentationToSurfaceForAllActors();
 		vis.spin();
 	}
-
+	printf("4\n");
 	pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud_1(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
 	uniform_sampling(polydata1, SAMPLE_POINTS_, write_normals, write_colors, *cloud_1);
-
+	printf("5\n");
 	if (INTER_VIS)
 	{
 		visualization::PCLVisualizer vis_sampled;
