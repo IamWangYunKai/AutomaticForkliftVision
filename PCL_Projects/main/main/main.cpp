@@ -15,7 +15,10 @@
 #include <pcl/common/transforms.h>             //转换矩阵
 #include <pcl/console/parse.h>
 
-typedef pcl::PointXYZRGBA PointType;  //PointXYZRGBA数据结构
+#define THREADS 8   //OpenMP在VS2015中的BUG，需要设置线程数否则报错
+
+//typedef pcl::PointXYZRGBA PointType;  //PointXYZRGBA数据结构
+typedef pcl::PointXYZ PointType;  //PointXYZ数据结构
 typedef pcl::Normal NormalType;       //法线结构
 typedef pcl::ReferenceFrame RFType;    //参考帧
 typedef pcl::SHOT352 DescriptorType;   //SHOT特征的数据结构
@@ -210,6 +213,7 @@ main(int argc, char *argv[])
 
 	//计算法线 normalestimationomp估计局部表面特性在每个三个特点，分别表面的法向量和曲率，平行，使用OpenMP标准。//初始化调度程序并设置要使用的线程数（默认为0）。
 	pcl::NormalEstimationOMP<PointType, NormalType> norm_est;
+	norm_est.setNumberOfThreads(THREADS);      //BUG fix for VS2015, add by Wang
 	norm_est.setKSearch(10);       //设置K邻域搜索阀值为10个点
 	norm_est.setInputCloud(model);  //设置输入点云
 	norm_est.compute(*model_normals);   //计算点云法线
@@ -232,6 +236,7 @@ main(int argc, char *argv[])
 
 	//为关键点计算描述子
 	pcl::SHOTEstimationOMP<PointType, NormalType, DescriptorType> descr_est;
+	descr_est.setNumberOfThreads(THREADS);     //BUG fix for VS2015, add by Wang
 	descr_est.setRadiusSearch(descr_rad_);  //设置搜索半径
 
 	descr_est.setInputCloud(model_keypoints);  //输入模型的关键点
@@ -332,7 +337,7 @@ main(int argc, char *argv[])
 	}
 
 	//输出的结果  找出输入模型是否在场景中出现
-	std::cout << "Model instances found: " << rototranslations.size() << std::endl;
+	std::cout << "\n\n\nModel instances found: " << rototranslations.size() << std::endl;
 	for (size_t i = 0; i < rototranslations.size(); ++i)
 	{
 		std::cout << "\n    Instance " << i + 1 << ":" << std::endl;
