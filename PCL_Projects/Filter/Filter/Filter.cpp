@@ -43,12 +43,11 @@ int main(int argc, char** argv){
 	std::cerr << *cloud_filtered_2 << std::endl;
 
 	pcl::PCDWriter writer;
-	writer.write<pcl::PointXYZ>("inliers.pcd", *cloud_filtered_2, false);
+	writer.write<pcl::PointXYZ>("output.pcd", *cloud_filtered_2, false);
 
 	//sor_2.setNegative(true);
 	//sor_2.filter(*cloud_filtered_2);
 	//writer.write<pcl::PointXYZ>("outliers.pcd", *cloud_filtered_2, false);
-
 
 
 	/******************************************************************************

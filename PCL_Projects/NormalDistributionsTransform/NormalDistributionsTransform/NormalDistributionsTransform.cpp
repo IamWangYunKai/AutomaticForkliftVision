@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#define PCD1 "4.pcd"
+#define PCD1 "output.pcd"
 #define PCD2 "pallet_2.pcd"
 /*
 使用正态分布变换进行配准的实验 。其中room_scan1.pcd  room_scan2.pcd这些点云包含同一房间360不同视角的扫描数据
