@@ -11,21 +11,22 @@
 #include <pcl/filters/extract_indices.h>
 #include <pcl/features/boundary.h>
 #include <vector>
-#include <ctime>
 #include <boost/thread/thread.hpp>
-#include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/features/eigen.h>
 #include <pcl/features/feature.h>
 #include <pcl/visualization/cloud_viewer.h>
+#include <cmath>
+
+#include <pcl/surface/gp3.h>
+#include <pcl/segmentation/region_growing.h>
 
 #include <gl/gl.h>
 #include <gl/glu.h>
 #include "vtkAutoInit.h" 
-VTK_MODULE_INIT(vtkRenderingOpenGL); // VTK was built with vtkRenderingOpenGL2
+VTK_MODULE_INIT(vtkRenderingOpenGL);
 VTK_MODULE_INIT(vtkInteractionStyle);
 
 int main(){
-	
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
 	//点云对象的读取
 	pcl::PCDReader reader;
@@ -62,7 +63,7 @@ int main(){
 	seg.setNormalDistanceWeight(0.1);//设置表面法线权重系数
 	seg.setMethodType(pcl::SAC_RANSAC);//设置采用RANSAC作为算法的参数估计方法
 	seg.setMaxIterations(500);             //设置迭代的最大次数
-	seg.setDistanceThreshold(0.5);         //设置内点到模型的距离允许最大值
+	seg.setDistanceThreshold(0.2);         //设置内点到模型的距离允许最大值
 	seg.setInputCloud(cloud);
 	seg.setInputNormals(normals);
 	// Obtain the plane inliers and coefficients
@@ -98,10 +99,98 @@ int main(){
 	pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals_2(new pcl::PointCloud<pcl::PointNormal>);
 	pcl::concatenateFields(*cloud_cylinder, *normals_2, *cloud_with_normals_2);
 	cout << "Calculate normal vector Over !" << endl;
+	pcl::io::savePCDFileASCII("output_2.pcd", *cloud_cylinder);
 
+	////////////////////////////////////////////////////////////////////
+	pcl::RegionGrowing<pcl::PointXYZ, pcl::Normal> reg;
+	reg.setMinClusterSize(50);
+	reg.setMaxClusterSize(1000000);
+	reg.setSearchMethod(tree);
+	reg.setNumberOfNeighbours(30);
+	reg.setInputCloud(cloud_cylinder);
+	//reg.setIndices (indices);
+	reg.setInputNormals(normals_2);
+	reg.setSmoothnessThreshold(3.0 / 180.0 * M_PI);
+	reg.setCurvatureThreshold(1.0);
+
+	std::vector <pcl::PointIndices> clusters;
+	reg.extract(clusters);
+
+	// 可视化聚类的结果
+	pcl::PointCloud <pcl::PointXYZRGB>::Ptr colored_cloud = reg.getColoredCloud();
+	pcl::visualization::CloudViewer viewer("Cluster viewer");
+	viewer.showCloud(colored_cloud);
+	while (!viewer.wasStopped())
+	{
+	}
+
+
+
+
+
+	/*
+	int normal_size = cloud_with_normals_2->size();
+	//计算平均的法向量
+	float mean_normal[3] = {0};
+	for (int i = 0; i < normal_size; i++) {
+		mean_normal[0] += cloud_with_normals_2->points[i].normal[0];
+		mean_normal[1] += cloud_with_normals_2->points[i].normal[1];
+		mean_normal[2] += cloud_with_normals_2->points[i].normal[2];
+	}
+	mean_normal[0] /= normal_size;
+	mean_normal[1] /= normal_size;
+	mean_normal[2] /= normal_size;
+	float a_norm = sqrt(mean_normal[0] * mean_normal[0] 
+		+ mean_normal[1] * mean_normal[1] 
+		+ mean_normal[2] * mean_normal[2]);
+
+	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_new(new pcl::PointCloud<pcl::PointXYZ>());
+	pcl::PointCloud<pcl::Normal>::Ptr normals_new(new pcl::PointCloud<pcl::Normal>);
+	for (int i = 0; i < normal_size; i++) {
+		float dot = mean_normal[0] * cloud_with_normals_2->points[i].normal[0]
+			+ mean_normal[1] * cloud_with_normals_2->points[i].normal[1]
+			+ mean_normal[2] * cloud_with_normals_2->points[i].normal[2];
+		float b_norm = sqrt(cloud_with_normals_2->points[i].normal[0]* cloud_with_normals_2->points[i].normal[0]
+			+ cloud_with_normals_2->points[i].normal[1]* cloud_with_normals_2->points[i].normal[1]
+			+ cloud_with_normals_2->points[i].normal[2]* cloud_with_normals_2->points[i].normal[2]);
+		float theta = dot / (a_norm * b_norm);
+		if (fabs(theta) < M_PI/18) {
+			cloud_new->push_back(cloud_cylinder->points[i]);
+			normals_new->push_back(normals_2->points[i]);
+		}
+	}
+	*/
+
+	////////////////////
+	/*
+	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("Normals"));
+	viewer->setBackgroundColor(0, 0, 0);
+	viewer->addPointCloud<pcl::PointXYZ>(cloud_new, "cloud");
+	while (!viewer->wasStopped())
+	{
+		viewer->spinOnce(100);
+		boost::this_thread::sleep(boost::posix_time::microseconds(100000));
+	}
+	*/
+
+
+	/*
+	//显示法向量
+	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("Normals"));
+	viewer->setBackgroundColor(0, 0, 0);
+	viewer->addPointCloud<pcl::PointXYZ>(cloud_new, "cloud");
+
+	viewer->addPointCloudNormals<pcl::PointXYZ, pcl::Normal>(cloud_new, normals_new, 3, 0.03, "normals");
+	while (!viewer->wasStopped())
+	{
+		viewer->spinOnce(100);
+		boost::this_thread::sleep(boost::posix_time::microseconds(100000));
+	}
+	*/
+	///////////////////////////////////////////////////////////////////
 
 	/*******************************************************************/
-	
+	/*
 	//calculate boundary;
 	pcl::PointCloud<pcl::Boundary> boundary;
 	pcl::BoundaryEstimation<pcl::PointXYZ, pcl::Normal, pcl::Boundary> est;
@@ -118,25 +207,28 @@ int main(){
 	for (int i = 0; i<cloud_cylinder->size(); i++) {
 		uint8_t x = (boundary.points[i].boundary_point);
 		int a = static_cast<int>(x); //该函数的功能是强制类型转换
-		if (a == 1)
-		{
+		if (a == 1){
 			//  boundPoints.push_back(cloud->points[i]);
 			(*boundPoints).push_back(cloud_cylinder->points[i]);
 			countBoundaries++;
 		}
-		else
-			noBoundPoints.push_back(cloud_cylinder->points[i]);
-
+		else noBoundPoints.push_back(cloud_cylinder->points[i]);
 	}
 	std::cout << "boudary size is：" << countBoundaries << std::endl;
 	//  pcl::io::savePCDFileASCII("boudary.pcd",boundPoints);
-
 	pcl::io::savePCDFileASCII("boudary.pcd", *boundPoints);
 	pcl::io::savePCDFileASCII("NoBoundpoints.pcd", noBoundPoints);
-	pcl::visualization::CloudViewer viewer("test");
-	viewer.showCloud(boundPoints);
-	while (!viewer.wasStopped())
+
+
+	//pcl::visualization::CloudViewer viewer("test");
+	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("Vista 3D"));
+	viewer->setBackgroundColor(0, 0, 0);
+	viewer->addPointCloud<pcl::PointXYZ>(boundPoints, "cloud");
+	while (!viewer->wasStopped())
 	{
+		viewer->spinOnce(100);
+		boost::this_thread::sleep(boost::posix_time::microseconds(100000));
 	}
 	return 0;
+	*/
 }
