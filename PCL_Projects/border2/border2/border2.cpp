@@ -31,7 +31,7 @@ int main(){
 	//点云对象的读取
 	pcl::PCDReader reader;
 	pcl::PCDWriter writer;
-	reader.read("test.pcd", *cloud);    //读取点云到cloud中
+	reader.read("r1_filter.pcd", *cloud);    //读取点云到cloud中
 	//首先计算点云法向量
 	cout << "Calculate normal vector ..." << endl;
 	// Create the normal estimation class, and pass the input dataset to it
@@ -63,7 +63,7 @@ int main(){
 	seg.setNormalDistanceWeight(0.1);//设置表面法线权重系数
 	seg.setMethodType(pcl::SAC_RANSAC);//设置采用RANSAC作为算法的参数估计方法
 	seg.setMaxIterations(500);             //设置迭代的最大次数
-	seg.setDistanceThreshold(0.2);         //设置内点到模型的距离允许最大值
+	seg.setDistanceThreshold(0.3);         //设置内点到模型的距离允许最大值
 	seg.setInputCloud(cloud);
 	seg.setInputNormals(normals);
 	// Obtain the plane inliers and coefficients
@@ -102,6 +102,8 @@ int main(){
 	pcl::io::savePCDFileASCII("output_2.pcd", *cloud_cylinder);
 
 	////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////
+	/*
 	pcl::RegionGrowing<pcl::PointXYZ, pcl::Normal> reg;
 	reg.setMinClusterSize(50);
 	reg.setMaxClusterSize(1000000);
@@ -116,6 +118,34 @@ int main(){
 	std::vector <pcl::PointIndices> clusters;
 	reg.extract(clusters);
 
+	std::cout << "\n\nNumber of clusters is equal to " << clusters.size() << std::endl;
+	std::cout << "First cluster has " << clusters[0].indices.size() << " points." << endl;
+	std::cout << "Second cluster has " << clusters[1].indices.size() << " points." << endl;
+	cout << "Origin points: " << cloud_cylinder->points.size() << endl;
+
+	//Estimate ground's normal
+	pcl::PointCloud<pcl::PointXYZ>::Ptr ground(new pcl::PointCloud<pcl::PointXYZ>);
+	for (int i = 0;i < clusters[1].indices.size();i++) {
+		// i 是聚类里面的索引
+		// clusters[0].indices[i] 可能是原来点云的索引
+		if (clusters[0].indices[i] % 200 == 0) {
+			cout << "i:="<<i <<"  "<<clusters[0].indices[i] << endl;
+		}
+		ground->push_back(cloud_cylinder->points[clusters[0].indices[i]]);
+	}
+	//calc ground normal
+	cout << "Calculate normal vector ..." << endl;
+	pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne_3;
+	ne_3.setInputCloud(ground);
+	pcl::search::KdTree<pcl::PointXYZ>::Ptr tree_3(new pcl::search::KdTree<pcl::PointXYZ>());
+	ne_3.setSearchMethod(tree_3);
+	pcl::PointCloud<pcl::Normal>::Ptr normals_3(new pcl::PointCloud<pcl::Normal>);
+	ne_3.setKSearch(20);
+	cout << "Computing ..." << endl;
+	ne_3.compute(*normals_3);
+	pcl::PointCloud<pcl::PointNormal>::Ptr ground_with_normals(new pcl::PointCloud<pcl::PointNormal>);
+	pcl::concatenateFields(*ground, *normals_3, *ground_with_normals);
+
 	// 可视化聚类的结果
 	pcl::PointCloud <pcl::PointXYZRGB>::Ptr colored_cloud = reg.getColoredCloud();
 	pcl::visualization::CloudViewer viewer("Cluster viewer");
@@ -123,23 +153,24 @@ int main(){
 	while (!viewer.wasStopped())
 	{
 	}
-
+	*/
 
 
 
 
 	/*
 	int normal_size = cloud_with_normals_2->size();
+	int ground_normal_size = ground_with_normals->size();
 	//计算平均的法向量
 	float mean_normal[3] = {0};
-	for (int i = 0; i < normal_size; i++) {
-		mean_normal[0] += cloud_with_normals_2->points[i].normal[0];
-		mean_normal[1] += cloud_with_normals_2->points[i].normal[1];
-		mean_normal[2] += cloud_with_normals_2->points[i].normal[2];
+	for (int i = 0; i < ground_normal_size; i++) {
+		mean_normal[0] += ground_with_normals->points[i].normal[0];
+		mean_normal[1] += ground_with_normals->points[i].normal[1];
+		mean_normal[2] += ground_with_normals->points[i].normal[2];
 	}
-	mean_normal[0] /= normal_size;
-	mean_normal[1] /= normal_size;
-	mean_normal[2] /= normal_size;
+	mean_normal[0] /= ground_normal_size;
+	mean_normal[1] /= ground_normal_size;
+	mean_normal[2] /= ground_normal_size;
 	float a_norm = sqrt(mean_normal[0] * mean_normal[0] 
 		+ mean_normal[1] * mean_normal[1] 
 		+ mean_normal[2] * mean_normal[2]);
@@ -162,7 +193,7 @@ int main(){
 	*/
 
 	////////////////////
-	/*
+	/*显示
 	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("Normals"));
 	viewer->setBackgroundColor(0, 0, 0);
 	viewer->addPointCloud<pcl::PointXYZ>(cloud_new, "cloud");
@@ -190,7 +221,7 @@ int main(){
 	///////////////////////////////////////////////////////////////////
 
 	/*******************************************************************/
-	/*
+	/*计算边界
 	//calculate boundary;
 	pcl::PointCloud<pcl::Boundary> boundary;
 	pcl::BoundaryEstimation<pcl::PointXYZ, pcl::Normal, pcl::Boundary> est;
