@@ -19,6 +19,7 @@
 
 #include <pcl/surface/gp3.h>
 #include <pcl/segmentation/region_growing.h>
+#include <pcl/common/transforms.h>
 
 #include <gl/gl.h>
 #include <gl/glu.h>
@@ -31,9 +32,8 @@ int main(){
 	//点云对象的读取
 	pcl::PCDReader reader;
 	pcl::PCDWriter writer;
-	reader.read("r1_filter.pcd", *cloud);    //读取点云到cloud中
+	reader.read("test.pcd", *cloud);    //读取点云到cloud中
 	//首先计算点云法向量
-	cout << "Calculate normal vector ..." << endl;
 	// Create the normal estimation class, and pass the input dataset to it
 	pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
 	ne.setInputCloud(cloud);
@@ -43,11 +43,9 @@ int main(){
 	// Use all neighbors in a sphere of radius 1cm
 	//ne.setRadiusSearch(1);
 	ne.setKSearch(20);
-	cout << "Computing ..." << endl;
 	ne.compute(*normals);
 	pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals(new pcl::PointCloud<pcl::PointNormal>);
 	pcl::concatenateFields(*cloud, *normals, *cloud_with_normals);
-	cout << "Calculate normal vector Over !" << endl;
 	
 	//采用RANSAC提取平面
 	cout << "Use RANSAC to extract the plane ..." << endl;
@@ -73,18 +71,15 @@ int main(){
 	extract.setInputCloud(cloud);
 	extract.setIndices(inliers_plane);
 	extract.setNegative(false);
-	cout << "Extract over !" << endl;
 	
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_cylinder(new pcl::PointCloud<pcl::PointXYZ>());
 	extract.filter(*cloud_cylinder);
 	if (cloud_cylinder->points.empty())
 		std::cerr << "Can't find the cylindrical component." << std::endl;
 	else{
-		std::cerr << "PointCloud representing the cylindrical component: " << cloud_cylinder->points.size() << " data points." << std::endl;
 		writer.write("output.pcd", *cloud_cylinder, false);
 	}
 	/*********************************************************************/
-	cout << "Calculate normal vector ..." << endl;
 	// Create the normal estimation class, and pass the input dataset to it
 	pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne_2;
 	ne_2.setInputCloud(cloud_cylinder);
@@ -94,16 +89,14 @@ int main(){
 	// Use all neighbors in a sphere of radius 1cm
 	//ne.setRadiusSearch(1);
 	ne_2.setKSearch(20);
-	cout << "Computing ..." << endl;
 	ne_2.compute(*normals_2);
 	pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals_2(new pcl::PointCloud<pcl::PointNormal>);
 	pcl::concatenateFields(*cloud_cylinder, *normals_2, *cloud_with_normals_2);
-	cout << "Calculate normal vector Over !" << endl;
 	pcl::io::savePCDFileASCII("output_2.pcd", *cloud_cylinder);
 
 	////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////
-	/*
+	
 	pcl::RegionGrowing<pcl::PointXYZ, pcl::Normal> reg;
 	reg.setMinClusterSize(50);
 	reg.setMaxClusterSize(1000000);
@@ -118,34 +111,61 @@ int main(){
 	std::vector <pcl::PointIndices> clusters;
 	reg.extract(clusters);
 
-	std::cout << "\n\nNumber of clusters is equal to " << clusters.size() << std::endl;
-	std::cout << "First cluster has " << clusters[0].indices.size() << " points." << endl;
-	std::cout << "Second cluster has " << clusters[1].indices.size() << " points." << endl;
-	cout << "Origin points: " << cloud_cylinder->points.size() << endl;
+	//std::cout << "\n\nNumber of clusters is equal to " << clusters.size() << std::endl;
+	//std::cout << "First cluster has " << clusters[0].indices.size() << " points." << endl;
+	//std::cout << "Second cluster has " << clusters[1].indices.size() << " points." << endl;
+	//cout << "Origin points: " << cloud_cylinder->points.size() << endl;
 
 	//Estimate ground's normal
 	pcl::PointCloud<pcl::PointXYZ>::Ptr ground(new pcl::PointCloud<pcl::PointXYZ>);
 	for (int i = 0;i < clusters[1].indices.size();i++) {
 		// i 是聚类里面的索引
 		// clusters[0].indices[i] 可能是原来点云的索引
-		if (clusters[0].indices[i] % 200 == 0) {
-			cout << "i:="<<i <<"  "<<clusters[0].indices[i] << endl;
-		}
 		ground->push_back(cloud_cylinder->points[clusters[0].indices[i]]);
 	}
 	//calc ground normal
-	cout << "Calculate normal vector ..." << endl;
 	pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne_3;
 	ne_3.setInputCloud(ground);
 	pcl::search::KdTree<pcl::PointXYZ>::Ptr tree_3(new pcl::search::KdTree<pcl::PointXYZ>());
 	ne_3.setSearchMethod(tree_3);
 	pcl::PointCloud<pcl::Normal>::Ptr normals_3(new pcl::PointCloud<pcl::Normal>);
 	ne_3.setKSearch(20);
-	cout << "Computing ..." << endl;
 	ne_3.compute(*normals_3);
 	pcl::PointCloud<pcl::PointNormal>::Ptr ground_with_normals(new pcl::PointCloud<pcl::PointNormal>);
 	pcl::concatenateFields(*ground, *normals_3, *ground_with_normals);
 
+	int normal_size = normals_3->size();
+	float ground_normal[3] = { 0 };
+	for (int i = 0; i < normal_size; i++) {
+		ground_normal[0] += normals_3->points[i].normal[0];
+		ground_normal[1] += normals_3->points[i].normal[1];
+		ground_normal[2] += normals_3->points[i].normal[2];
+	}
+	ground_normal[0] /= normal_size;
+	ground_normal[1] /= normal_size;
+	ground_normal[2] /= normal_size;
+	float ground_normal_norm = sqrt(ground_normal[0]* ground_normal[0]+ ground_normal[1]* ground_normal[1]+ ground_normal[2]* ground_normal[2]);
+	cout << "Ground normal x,y,z : " << ground_normal[0] << ", " << ground_normal[1] << ", " << ground_normal[2] << endl;
+	cout << "Groung point:" << ground->points[0].x << ", "<<ground->points[0].y << ", "<<ground->points[0].z<<endl;
+
+	
+	float ox = ground->points[0].x;
+	float oy = ground->points[0].y;
+	float oz = ground->points[0].z;
+	Eigen::Affine3f transform = Eigen::Affine3f::Identity();
+	// 定义沿着z轴平移0.6m
+	transform.translation() << ox, oy, oz;
+	float theta_x = atan2(ground_normal[1], ground_normal_norm);
+	float theta_y = atan2(ground_normal[0], ground_normal_norm);
+	cout << "theta_x: " << theta_x << "  theta_y: " << theta_y << endl;
+	// 绕x轴旋转一个theta角
+	transform.rotate(Eigen::AngleAxisf(theta_x, Eigen::Vector3f::UnitX()));
+	transform.rotate(Eigen::AngleAxisf(theta_y, Eigen::Vector3f::UnitY()));
+	//cout << transform.matrix() << endl;
+	pcl::PointCloud<pcl::PointXYZ>::Ptr pc_transform(new pcl::PointCloud<pcl::PointXYZ>());
+	pcl::transformPointCloud(*cloud_cylinder, *pc_transform, transform);
+	pcl::io::savePCDFileASCII("pc_transform.pcd", *pc_transform);
+	/*
 	// 可视化聚类的结果
 	pcl::PointCloud <pcl::PointXYZRGB>::Ptr colored_cloud = reg.getColoredCloud();
 	pcl::visualization::CloudViewer viewer("Cluster viewer");
@@ -154,6 +174,18 @@ int main(){
 	{
 	}
 	*/
+	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("Normals"));
+	viewer->setBackgroundColor(0, 0, 0);
+	viewer->addPointCloud<pcl::PointXYZ>(pc_transform, "cloud");
+	pcl::PointCloud <pcl::PointXYZRGB>::Ptr colored_cloud = reg.getColoredCloud();
+	viewer->addPointCloud<pcl::PointXYZRGB>(colored_cloud, "color");
+	while (!viewer->wasStopped())
+	{
+		viewer->spinOnce(100);
+		boost::this_thread::sleep(boost::posix_time::microseconds(100000));
+	}
+
+
 
 
 

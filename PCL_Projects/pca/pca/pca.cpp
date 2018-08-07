@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_projected(new pcl::PointCloud<pcl::PointXYZ>);
 	pcl::PCDReader reader;
-	reader.read("r1_filter.pcd", *cloud);    //读取点云到cloud中
+	reader.read("output.pcd", *cloud);    //读取点云到cloud中
 
 	//create a set of planar coefficients with X=Y=0, Z = 1
 	pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients());
