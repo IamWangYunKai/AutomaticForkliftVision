@@ -74,7 +74,7 @@ int main() {
 	pcl::concatenateFields(*cloud, *normals, *cloud_with_normals);
 
 	//采用RANSAC提取平面
-	cout << "Use RANSAC to extract the plane ..." << endl;
+	//cout << "Use RANSAC to extract the plane ..." << endl;
 	pcl::SACSegmentationFromNormals<pcl::PointXYZ, pcl::Normal> seg;
 	pcl::ModelCoefficients::Ptr coefficients_plane(new pcl::ModelCoefficients);
 	//pcl::ModelCoefficients::Ptr coefficients_cylinder(new pcl::ModelCoefficients);
@@ -128,11 +128,11 @@ int main() {
 	reg.setInputCloud(cloud_cylinder);
 	//reg.setIndices (indices);
 	reg.setInputNormals(normals_2);
-	reg.setSmoothnessThreshold(6.0 / 180.0 * M_PI);//7
+	reg.setSmoothnessThreshold(7.0 / 180.0 * M_PI);//7
 	reg.setCurvatureThreshold(1);//0.1
 	std::vector <pcl::PointIndices> clusters;
 	reg.extract(clusters);
-	std::cout << "\n\nNumber of clusters is equal to " << clusters.size() << std::endl;
+	std::cout << "Number of clusters is equal to " << clusters.size() << std::endl;
 	if (clusters.size() < 2) {
 		cout << "Not enough clusters !" << endl;
 		exit(0);
@@ -160,7 +160,7 @@ int main() {
 	ground_normal[0] /= ground_normal_norm;
 	ground_normal[1] /= ground_normal_norm;
 	ground_normal[2] /= ground_normal_norm;
-	cout << "Ground normal x,y,z : " << ground_normal[0] << ", " << ground_normal[1] << ", " << ground_normal[2] << endl;
+	cout << "Ground normal vector : " << ground_normal[0] << ", " << ground_normal[1] << ", " << ground_normal[2] << endl;
 	
 	pcl::PointCloud<pcl::PointXYZ>::Ptr pallet(new pcl::PointCloud<pcl::PointXYZ>);
 	pcl::PointCloud<pcl::Normal>::Ptr normals_4(new pcl::PointCloud<pcl::Normal>);
@@ -183,14 +183,26 @@ int main() {
 	pallet_normal[0] /= pallet_normal_norm;
 	pallet_normal[1] /= pallet_normal_norm;
 	pallet_normal[2] /= pallet_normal_norm;
-	cout << "Pallet normal x,y,z : " << pallet_normal[0] << ", " << pallet_normal[1] << ", " << pallet_normal[2] << endl;
+	cout << "Pallet vector : " << pallet_normal[0] << ", " << pallet_normal[1] << ", " << pallet_normal[2] << endl;
 
 	float dot = ground_normal[0] * pallet_normal[0] + ground_normal[1] * pallet_normal[1] + ground_normal[2] * pallet_normal[2];
 	cout << "Dot : " << dot << endl;
 	float theta = abs(acos(abs(dot)) - M_PI/2);
-	cout << "theta: " << theta << " rad = " << theta * 180 / M_PI <<" °"<<endl;
+	cout << "theta: " << theta << " rad = " << theta * 180 / M_PI <<"°"<<endl;
 
-	//float special_point[6] = { 0 };
+	float special_point[6] = { pallet->points[0].x, pallet->points[0].x, pallet->points[0].y, pallet->points[0].y, pallet->points[0].z, pallet->points[0].z };
+	for (int i = 0; i < pallet_normal_size; i++) {
+		if (pallet->points[i].x < special_point[0]) special_point[0] = pallet->points[i].x;
+		if (pallet->points[i].x > special_point[1]) special_point[1] = pallet->points[i].x;
+		if (pallet->points[i].y < special_point[2]) special_point[3] = pallet->points[i].y;
+		if (pallet->points[i].y > special_point[3]) special_point[4] = pallet->points[i].y;
+		if (pallet->points[i].z < special_point[4]) special_point[5] = pallet->points[i].z;
+		if (pallet->points[i].z > special_point[5]) special_point[6] = pallet->points[i].z;
+	}
+	float center_x = 0.5*(special_point[0]+ special_point[1]);
+	float center_y = 0.5*(special_point[2] + special_point[3]);
+	float center_z = 0.5*(special_point[4] + special_point[5]);
+	cout << "Center: " << center_x << ", "<< center_y << ", " << center_z << endl;
 
 	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("Normals"));
 	viewer->setBackgroundColor(0, 0, 0);
