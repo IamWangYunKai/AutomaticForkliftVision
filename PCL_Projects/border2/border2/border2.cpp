@@ -98,31 +98,46 @@ int main(){
 	////////////////////////////////////////////////////////////////////
 	
 	pcl::RegionGrowing<pcl::PointXYZ, pcl::Normal> reg;
-	reg.setMinClusterSize(50);
+	reg.setMinClusterSize(200);//100
 	reg.setMaxClusterSize(1000000);
-	reg.setSearchMethod(tree);
-	reg.setNumberOfNeighbours(30);
+	reg.setSearchMethod(tree_2);
+	reg.setNumberOfNeighbours(150);//150
 	reg.setInputCloud(cloud_cylinder);
 	//reg.setIndices (indices);
 	reg.setInputNormals(normals_2);
-	reg.setSmoothnessThreshold(3.0 / 180.0 * M_PI);
-	reg.setCurvatureThreshold(1.0);
+	reg.setSmoothnessThreshold(7.0 / 180.0 * M_PI);//7
+	reg.setCurvatureThreshold(1);//1
 
 	std::vector <pcl::PointIndices> clusters;
 	reg.extract(clusters);
 
-	//std::cout << "\n\nNumber of clusters is equal to " << clusters.size() << std::endl;
-	//std::cout << "First cluster has " << clusters[0].indices.size() << " points." << endl;
-	//std::cout << "Second cluster has " << clusters[1].indices.size() << " points." << endl;
+	std::cout << "\n\nNumber of clusters is equal to " << clusters.size() << std::endl;
+
 	//cout << "Origin points: " << cloud_cylinder->points.size() << endl;
 
 	//Estimate ground's normal
 	pcl::PointCloud<pcl::PointXYZ>::Ptr ground(new pcl::PointCloud<pcl::PointXYZ>);
-	for (int i = 0;i < clusters[1].indices.size();i++) {
+	for (int i = 0;i < clusters[0].indices.size();i++) {
 		// i 是聚类里面的索引
 		// clusters[0].indices[i] 可能是原来点云的索引
 		ground->push_back(cloud_cylinder->points[clusters[0].indices[i]]);
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/*
 	//calc ground normal
 	pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne_3;
 	ne_3.setInputCloud(ground);
@@ -147,8 +162,8 @@ int main(){
 	float ground_normal_norm = sqrt(ground_normal[0]* ground_normal[0]+ ground_normal[1]* ground_normal[1]+ ground_normal[2]* ground_normal[2]);
 	cout << "Ground normal x,y,z : " << ground_normal[0] << ", " << ground_normal[1] << ", " << ground_normal[2] << endl;
 	cout << "Groung point:" << ground->points[0].x << ", "<<ground->points[0].y << ", "<<ground->points[0].z<<endl;
-
-	
+	*/
+	/*
 	float ox = ground->points[0].x;
 	float oy = ground->points[0].y;
 	float oz = ground->points[0].z;
@@ -165,6 +180,7 @@ int main(){
 	pcl::PointCloud<pcl::PointXYZ>::Ptr pc_transform(new pcl::PointCloud<pcl::PointXYZ>());
 	pcl::transformPointCloud(*cloud_cylinder, *pc_transform, transform);
 	pcl::io::savePCDFileASCII("pc_transform.pcd", *pc_transform);
+	*/
 	/*
 	// 可视化聚类的结果
 	pcl::PointCloud <pcl::PointXYZRGB>::Ptr colored_cloud = reg.getColoredCloud();
@@ -176,7 +192,7 @@ int main(){
 	*/
 	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("Normals"));
 	viewer->setBackgroundColor(0, 0, 0);
-	viewer->addPointCloud<pcl::PointXYZ>(pc_transform, "cloud");
+	//viewer->addPointCloud<pcl::PointXYZ>(pc_transform, "cloud");
 	pcl::PointCloud <pcl::PointXYZRGB>::Ptr colored_cloud = reg.getColoredCloud();
 	viewer->addPointCloud<pcl::PointXYZRGB>(colored_cloud, "color");
 	while (!viewer->wasStopped())
