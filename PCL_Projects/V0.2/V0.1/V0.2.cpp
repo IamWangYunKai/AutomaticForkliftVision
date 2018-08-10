@@ -35,7 +35,7 @@ int main() {
 	pcl::PCDReader reader;
 	pcl::PCDWriter writer;
 	reader.read("4.pcd", *input_cloud);
-
+	cout << "Reading Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	//statistical Outlier Removal
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_2(new pcl::PointCloud<pcl::PointXYZ>);
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
@@ -62,7 +62,7 @@ int main() {
 	ne.compute(*normals);
 	pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals(new pcl::PointCloud<pcl::PointNormal>);
 	pcl::concatenateFields(*cloud, *normals, *cloud_with_normals);
-
+	cout << "First Normal Estimation Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	//采用RANSAC提取平面
 	//cout << "Use RANSAC to extract the plane ..." << endl;
 	pcl::SACSegmentationFromNormals<pcl::PointXYZ, pcl::Normal> seg;
@@ -90,11 +90,14 @@ int main() {
 
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_cylinder(new pcl::PointCloud<pcl::PointXYZ>());
 	extract.filter(*cloud_cylinder);
+	/*
 	if (cloud_cylinder->points.empty())
 		std::cerr << "Can't find the cylindrical component." << std::endl;
 	else {
 		writer.write("output.pcd", *cloud_cylinder, false);
 	}
+	*/
+	cout << "RANSAC Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	/////////////////////////////////////////////////
 	// Create the normal estimation class, and pass the input dataset to it
 	pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne_2;
@@ -109,7 +112,7 @@ int main() {
 	pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals_2(new pcl::PointCloud<pcl::PointNormal>);
 	pcl::concatenateFields(*cloud_cylinder, *normals_2, *cloud_with_normals_2);
 
-	cout << "Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
+	cout << "Second Normal Estimation Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	////////////////////////////////////////////////////////////////////
 	pcl::RegionGrowing<pcl::PointXYZ, pcl::Normal> reg;
 	reg.setMinClusterSize(50);//200
@@ -127,6 +130,7 @@ int main() {
 
 	std::vector <pcl::PointIndices> clusters;
 	reg.extract(clusters);
+	cout << "Region Growing Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	std::cout << "Number of clusters is equal to " << clusters.size() << std::endl;
 
 	pcl::PointCloud<pcl::Normal>::Ptr pallet_avg_normal(new pcl::PointCloud<pcl::Normal>);
