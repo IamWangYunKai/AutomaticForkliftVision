@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -174,10 +174,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ProjectReference Include="D:\Seer\PCS\SDK\build\samples\SampleO3D3xxCamera.vcxproj">
       <Project>{5C9449C2-ACBB-320E-8432-F45A9301735E}</Project>
       <Name>SampleO3D3xxCamera</Name>
-    </ProjectReference>
-    <ProjectReference Include="D:\Seer\PCS\SDK\build\third_party\xmlrpc\libxmlrpc.vcxproj">
-      <Project>{34EE1954-5F0A-31C6-99EC-45F13DA6121C}</Project>
-      <Name>libxmlrpc</Name>
     </ProjectReference>
     <ProjectReference Include="D:\Seer\PCS\SDK\build\third_party\xmlrpc\libxmlrpc_client.vcxproj">
       <Project>{6D6E03A6-3CBE-35FC-91EA-AA945A55690B}</Project>

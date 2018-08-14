@@ -1,26 +1,15 @@
 ﻿#include "stdafx.h"
 #include <cmath>
-#include <algorithm>
-#include <vector>
 #include <time.h>
-#include <pcl/range_image/range_image.h>
 #include <pcl/io/pcd_io.h>
-#include <pcl/visualization/range_image_visualizer.h>
 #include <pcl/visualization/pcl_visualizer.h>
-#include <pcl/features/range_image_border_extractor.h>
-#include <pcl/console/parse.h>
 #include <pcl/features/normal_3d.h>
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/point_types.h>
 #include <pcl/filters/extract_indices.h>
-#include <pcl/features/boundary.h>
 #include <pcl/features/eigen.h>
-#include <pcl/features/feature.h>
 #include <pcl/visualization/cloud_viewer.h>
-#include <pcl/surface/gp3.h>
 #include <pcl/segmentation/region_growing.h>
-#include <pcl/common/transforms.h>
-#include <pcl/filters/voxel_grid.h>
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/common/transforms.h>
 #include <pcl/filters/passthrough.h>
@@ -31,6 +20,8 @@
 VTK_MODULE_INIT(vtkRenderingOpenGL);
 VTK_MODULE_INIT(vtkInteractionStyle);
 
+#define DEBUG true
+
 int main() {
 	pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZ>);
 	//点云对象的读取
@@ -38,7 +29,7 @@ int main() {
 	pcl::PCDWriter writer;
 	reader.read("4.pcd", *input_cloud);
 	cout << "Reading Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
-
+	//根据摄像头内参坐标转换
 	Eigen::Affine3f transform = Eigen::Affine3f::Identity();
 	float theta_x = - 20 * M_PI / 180.0f;
 	transform.rotate(Eigen::AngleAxisf(theta_x, Eigen::Vector3f::UnitX()));
@@ -47,31 +38,30 @@ int main() {
 	transform.translation() << 0.0, -0.65, -0.7;
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_tsf(new pcl::PointCloud<pcl::PointXYZ>());
 	pcl::transformPointCloud(*input_cloud, *cloud_tsf, transform);
+	cout << "Transform Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 
-
-
+	//直通滤波器切割点云
 	pcl::PassThrough<pcl::PointXYZ> pass;
 	pass.setInputCloud(cloud_tsf);            //设置输入点云
 	pass.setFilterFieldName("y");         //设置过滤时所需要点云类型的Z字段
-	pass.setFilterLimits(-0.14, -0.01);        //设置在过滤字段的范围		
-	//pass.setFilterLimitsNegative (true);   //设置保留范围内还是过滤掉范围内
+	pass.setFilterLimits(-0.14, -0.03);        //设置在过滤字段的范围		
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered(new pcl::PointCloud<pcl::PointXYZ>);
 	pass.filter(*cloud_filtered);            //执行滤波，保存过滤结果在cloud_filtered
+	cout << "Pass through Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 
-	/*
-	cout << "Totle Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
-	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("Normals"));
-	viewer->setBackgroundColor(0, 0, 0);
-	viewer->addPointCloud<pcl::PointXYZ>(cloud_filtered, "tsf");
-	viewer->addCoordinateSystem();//红色是X轴，绿色是Y轴，蓝色是Z
-	while (!viewer->wasStopped()) {
-		viewer->spinOnce(100);
-		boost::this_thread::sleep(boost::posix_time::microseconds(100000));
+	//切割后可视化
+	if (DEBUG) {
+		boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("Normals"));
+		viewer->setBackgroundColor(0, 0, 0);
+		viewer->addPointCloud<pcl::PointXYZ>(cloud_filtered, "tsf");
+		viewer->addCoordinateSystem();//红色是X轴，绿色是Y轴，蓝色是Z
+		while (!viewer->wasStopped()) {
+			viewer->spinOnce(100);
+			boost::this_thread::sleep(boost::posix_time::microseconds(100000));
+		}
 	}
-	*/
 
-
-	//statistical Outlier Removal
+	//统计滤波器去噪声
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
 	pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor_2;   //创建滤波器对象
 	sor_2.setInputCloud(cloud_filtered);                           //设置待滤波的点云
@@ -79,21 +69,20 @@ int main() {
 	sor_2.setStddevMulThresh(0.5);                    //设置判断是否为离群点的阀值
 	sor_2.filter(*cloud);                    //存储
 	cout << "StatisticalOutlierRemoval Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
-	//////////////////////////////////////
 	
+	//法向量估计
 	pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
 	ne.setInputCloud(cloud);
 	pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZ>());
 	ne.setSearchMethod(tree);
 	pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>);
-	// Use all neighbors in a sphere of radius 1cm
-	//ne.setRadiusSearch(1);
 	ne.setKSearch(20);
 	ne.compute(*normals);
 	pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals(new pcl::PointCloud<pcl::PointNormal>);
 	pcl::concatenateFields(*cloud, *normals, *cloud_with_normals);
 	cout << "First Normal Estimation Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
-	//采用RANSAC提取平面
+
+	//采用RANSAC分割地面
 	pcl::SACSegmentationFromNormals<pcl::PointXYZ, pcl::Normal> seg;
 	pcl::ModelCoefficients::Ptr coefficients_plane(new pcl::ModelCoefficients);
 	pcl::PointIndices::Ptr inliers_plane(new pcl::PointIndices);
@@ -114,16 +103,9 @@ int main() {
 	extract.filter(*cloud_cylinder);
 	cout << "RANSAC Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 
-
-
-
-
-
-	/////////////////////////////////////////////////
-	// Create the normal estimation class, and pass the input dataset to it
+	//法向量重新估计
 	pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne_2;
 	ne_2.setInputCloud(cloud_cylinder);
-	//ne_2.setInputCloud(cloud);
 	pcl::search::KdTree<pcl::PointXYZ>::Ptr tree_2(new pcl::search::KdTree<pcl::PointXYZ>());
 	ne_2.setSearchMethod(tree_2);
 	pcl::PointCloud<pcl::Normal>::Ptr normals_2(new pcl::PointCloud<pcl::Normal>);
@@ -131,32 +113,29 @@ int main() {
 	ne_2.compute(*normals_2);
 	pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals_2(new pcl::PointCloud<pcl::PointNormal>);
 	pcl::concatenateFields(*cloud_cylinder, *normals_2, *cloud_with_normals_2);
-	//pcl::concatenateFields(*cloud, *normals_2, *cloud_with_normals_2);
 	cout << "Second Normal Estimation Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 
-	////////////////////////////////////////////////////////////////////
+	//区域增长算法找到三个端面
 	pcl::RegionGrowing<pcl::PointXYZ, pcl::Normal> reg;
-	reg.setMinClusterSize(50);//200
+	reg.setMinClusterSize(50);
 	reg.setMaxClusterSize(300);
 	reg.setSearchMethod(tree_2);
-	reg.setNumberOfNeighbours(20);//150
+	reg.setNumberOfNeighbours(20);
 	reg.setSmoothModeFlag(true);
 	reg.setCurvatureTestFlag(true);
 	reg.setResidualTestFlag(true);
 	reg.setInputCloud(cloud_cylinder);
-	//reg.setInputCloud(cloud);
 	reg.setInputNormals(normals_2);
 	reg.setSmoothnessThreshold(7.0f / 180.0f * M_PI);  //判断法向量夹角
 	reg.setCurvatureThreshold(0.1);                    //判断曲率
-	reg.setResidualThreshold(0.05);                     //判断投影
-
+	reg.setResidualThreshold(0.05);                    //判断投影
 	std::vector <pcl::PointIndices> clusters;
 	reg.extract(clusters);
 	cout << "Region Growing Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
-	std::cout << "Number of clusters is equal to " << clusters.size() << std::endl;
+	cout << "Number of clusters is equal to " << clusters.size() << endl;
 
 	pcl::PointCloud<pcl::Normal>::Ptr pallet_avg_normal(new pcl::PointCloud<pcl::Normal>);//三个面的法向量
-	pcl::PointCloud<pcl::PointXYZ>::Ptr center(new pcl::PointCloud<pcl::PointXYZ>());//三个面的中心坐标
+	pcl::PointCloud<pcl::PointXYZ>::Ptr center(new pcl::PointCloud<pcl::PointXYZ>());     //三个面的中心坐标
 	if (clusters.size() < 2) {
 		cout << "No enough clusters !" << endl;
 		exit(0);
@@ -169,7 +148,6 @@ int main() {
 		normals_4->clear();
 		for (int i = 0;i < clusters[num].indices.size();i++) {
 			pallet->push_back(cloud_cylinder->points[clusters[num].indices[i]]);
-			//pallet->push_back(cloud->points[clusters[num].indices[i]]);
 			normals_4->push_back(normals_2->points[clusters[num].indices[i]]);
 		}
 
@@ -199,9 +177,9 @@ int main() {
 		center->push_back(pcl::PointXYZ(center_point[0], center_point[1], center_point[2]));
 	}
 
-	float pallet_normal_final[3] = { 0 };//最终认为的栈板前表面法向量
-	float pallet_center_final[3] = { 0 };//最终认为的栈板前表面中点
-	float total_normal_size = 0;//所有栈板前表面点的个数
+	float pallet_normal_final[3] = { 0 };   //最终认为的栈板前表面法向量
+	float pallet_center_final[3] = { 0 };   //最终认为的栈板前表面中点
+	float total_normal_size = 0;            //所有栈板前表面点的个数
 	int total_size = pallet_avg_normal->size();//聚类数量
 	for (int i = 0; i < total_size; i++) {
 		cout << pallet_avg_normal->points[i] << endl;
@@ -213,7 +191,7 @@ int main() {
 		pallet_center_final[2] += center->points[i].z;
 		total_normal_size += clusters[i].indices.size();
 	}
-	pallet_normal_final[0] /= total_normal_size;//取加权平均
+	pallet_normal_final[0] /= total_normal_size;  //取加权平均
 	pallet_normal_final[1] /= total_normal_size;
 	pallet_normal_final[2] /= total_normal_size;
 	pallet_center_final[0] /= total_size;
@@ -239,6 +217,7 @@ int main() {
 
 	cout << "Totle Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	
+	//可视化
 	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("Normals"));
 	viewer->setBackgroundColor(0, 0, 0);
 	pcl::PointCloud <pcl::PointXYZRGB>::Ptr colored_cloud = reg.getColoredCloud();

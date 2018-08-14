@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Seer\PCS\SDK\code\processing_plugin\src\o3d3xxProc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\pmdsdk\include\pmddatadescription.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\pmdsdk\include\pmdsdk2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\pmdsdk\include\pmdsdk2common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Seer\PCS\SDK\code\processing_plugin\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="D:\Seer\PCS\SDK\build\processing_plugin\version.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{A84BC4CC-584C-3309-910B-2D034F5CB26E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{BB8F94D2-2A82-3579-BC7E-45388A9724B0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

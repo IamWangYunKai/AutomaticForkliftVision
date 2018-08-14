@@ -100,12 +100,6 @@ int main(void){
 		return 0;
 	}
 
-	/* 3D coordinates are stored in interleved way .i.e.
-	for every pixel i
-	xcordinate value = xyz3Dcoordinate[i+0]
-	ycordinate value = xyz3Dcoordinate[i+1]
-	zcordinate value = xyz3Dcoordinate[i+2]*/
-
 	res = pmdGet3DCoordinates(hnd, &xyz3Dcoordinate[0], xyz3Dcoordinate.size() * sizeof(float));
 	if (res != PMD_OK){
 		pmdGetLastError(hnd, err, 128);
@@ -114,34 +108,7 @@ int main(void){
 		getchar();
 		return 0;
 	}
-	/*
-	//calculating the mean values of X/Y/Z/ Image
-	float XSum = 0, YSum = 0, ZSum = 0;
-	float ASum = 0, DSum = 0;
-	unsigned counter = 0;
-	for (int i = 0; i < imgHeight * imgWidth; i++){
-		if (!(flags[i] & 1)) { // first bit is set to 1,if pixel is invalid
-			DSum += dist[i];
-			ASum += amp[i];
-			XSum += xyz3Dcoordinate[i * 3 + 0];
-			YSum += xyz3Dcoordinate[i * 3 + 1];
-			ZSum += xyz3Dcoordinate[i * 3 + 2];
-			counter++;
-		}
-	}
 
-	float DMean = counter ? (DSum / float(counter)) : 0.f;
-	float AMean = counter ? (ASum / float(counter)) : 0.f;
-	float XMean = counter ? (XSum / float(counter)) : 0.f;
-	float YMean = counter ? (YSum / float(counter)) : 0.f;
-	float ZMean = counter ? (ZSum / float(counter)) : 0.f;
-
-	printf(" DMean = %fm \n AMean = %f \n", DMean, AMean);
-	printf(" XMean = %fm \n YMean = %fm \n ZMean = %fm ", XMean, YMean, ZMean);
-
-	printf("\n DONE");
-	*/
-	/*******************************************************************************/
 	if (WRITE_DATA) {
 		string filename = to_string(rand()) + ".pcd";
 		ofstream outfile(filename);
@@ -151,22 +118,20 @@ int main(void){
 		}
 		outfile << "# .PCD v0.7 - Point Cloud Data file format" << endl;
 		outfile << "VERSION 0.7" << endl;
-		outfile << "FIELDS x y z d a" << endl;
-		outfile << "SIZE 4 4 4 4 4" << endl;
-		outfile << "TYPE F F F F F" << endl;
-		outfile << "COUNT 1 1 1 1 1" << endl;
-		outfile << "WIDTH 176" << endl;
-		outfile << "HEIGHT 132" << endl;
+		outfile << "FIELDS x y z" << endl;
+		outfile << "SIZE 4 4 4" << endl;
+		outfile << "TYPE F F F" << endl;
+		outfile << "COUNT 1 1 1" << endl;
+		outfile << "WIDTH 16782" << endl;
+		outfile << "HEIGHT 1" << endl;
 		outfile << "VIEWPOINT 0 0 0 1 0 0 0" << endl;
-		outfile << "POINTS 23232" << endl;
+		outfile << "POINTS 16782" << endl;
 		outfile << "DATA ascii" << endl;
 		for (int i = 0; i < imgHeight * imgWidth; i++) {
 			if (!(flags[i] & 1)) { // first bit is set to 1,if pixel is invalid
 				outfile << xyz3Dcoordinate[i * 3 + 0] << " ";
 				outfile << xyz3Dcoordinate[i * 3 + 1] << " ";
-				outfile << xyz3Dcoordinate[i * 3 + 2] << " ";;
-				outfile << dist[i] << " ";
-				outfile << amp[i] << endl;
+				outfile << xyz3Dcoordinate[i * 3 + 2] << endl;
 			}
 		}
 
@@ -195,16 +160,6 @@ int main(void){
 	printf("\n integrationTime: %d\n", integrationTime);
 	printf("\n DONE");
 	printf("\n -----------------------------------------------------------------------------");
-	/*
-	for (int i = 0; i < 1000; i++) {
-		res = pmdUpdate(hnd);
-		res = pmdGetDistances(hnd, &dist[0], dist.size() * sizeof(float));
-		res = pmdGetAmplitudes(hnd, &amp[0], amp.size() * sizeof(float));
-		res = pmdGetFlags(hnd, &flags[0], flags.size() * sizeof(float));
-		res = pmdGet3DCoordinates(hnd, &xyz3Dcoordinate[0], xyz3Dcoordinate.size() * sizeof(float));
-		//printf("%f \n", xyz3Dcoordinate[999]);
-	}
-	*/
 	printf("\n Closing the connection \n");
 	res = pmdClose(hnd);
 	if (res != PMD_OK){

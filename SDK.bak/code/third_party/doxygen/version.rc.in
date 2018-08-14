@@ -1,0 +1,61 @@
+#include <winresrc.h>
+
+#define VER_FILEVERSION             @VERSION_MAJOR@,@VERSION_MINOR@,@VERSION_BUILD@,0
+#define VER_FILEVERSION_STR         "@VERSION_MAJOR@.@VERSION_MINOR@.@VERSION_BUILD@.0\0"
+
+#define VER_PRODUCTVERSION          @VERSION_MAJOR@,@VERSION_MINOR@,@VERSION_BUILD@,0
+#define VER_PRODUCTVERSION_STR      "@VERSION_MAJOR@.@VERSION_MINOR@.@VERSION_BUILD@\0"
+
+#define VER_COMPANYNAME_STR 		"ifm electronic gmbh"
+#define VER_FILEDESCRIPTION_STR		"O3D3xx_Plugin"
+#define VER_INTERNALNAME_STR		VER_FILEDESCRIPTION_STR
+#define VER_LEGALCOPYRIGHT_STR		"Copyright (c) ifm electronic gmbh, 2014"
+#define VER_ORIGINALNAME_STR		VER_FILEDESCRIPTION_STR
+
+
+#ifndef DEBUG
+#define VER_DEBUG                   0x0L
+#else
+#define VER_DEBUG                   1x1L
+#endif
+
+/* Check the details in the following file - */
+/* C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Include\VerRsrc.h */
+VS_VERSION_INFO VERSIONINFO
+	FILEVERSION        VER_PRODUCTVERSION
+	PRODUCTVERSION     VER_PRODUCTVERSION
+	FILEFLAGSMASK      VS_FFI_FILEFLAGSMASK
+	FILEFLAGS          VER_DEBUG
+	FILEOS             VOS_UNKNOWN
+	FILETYPE           VFT_DLL
+	FILESUBTYPE        VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "CompanyName",      	VER_COMPANYNAME_STR
+            VALUE "FileDescription",  	VER_FILEDESCRIPTION_STR
+            VALUE "FileVersion",      	VER_PRODUCTVERSION_STR
+            VALUE "InternalName",     	VER_INTERNALNAME_STR
+            VALUE "LegalCopyright",   	VER_LEGALCOPYRIGHT_STR
+			VALUE "OriginalFilename", 	VER_ORIGINALNAME_STR
+			VALUE "ProductName",		VER_ORIGINALNAME_STR
+            VALUE "ProductVersion",   	VER_PRODUCTVERSION_STR
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        /* The following line should only be modified for localized versions.     */
+        /* It consists of any number of WORD,WORD pairs, with each pair           */
+        /* describing a language,codepage combination supported by the file.      */
+        /*                                                                        */
+        /* For example, a file might have values "0x409,1252" indicating that it  */
+        /* supports English language (0x409) in the Windows ANSI codepage (1252). */
+		/* http://msdn.microsoft.com/en-us/library/windows/desktop/dd318693(v=vs.85).aspx */
+
+        VALUE "Translation", 0x0000, 0x04b0, 0x0800, 0x04b0
+
+    END
+END

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -110,7 +110,8 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message>					</Message>
+      <Message>
+      </Message>
       <Command>setlocal
 E:\cmake-3.10.0-win64-x64\bin\cmake.exe -E copy_directory D:/Seer/PCS/SDK/code/source_plugin/../../tools/lightvis D:/Seer/PCS/SDK/build/bin/Debug/LightVis
 if %errorlevel% neq 0 goto :cmEnd
@@ -194,7 +195,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DLL_EXPORTS;_WINSOCK_DEPRECATED_NO_WARNINGS;CMAKE_INTDIR="Release";O3D3xxCamera_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <DebugInformationFormat></DebugInformationFormat>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DLL_EXPORTS;_WINSOCK_DEPRECATED_NO_WARNINGS;CMAKE_INTDIR=\"Release\";O3D3xxCamera_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -209,7 +211,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message>					</Message>
+      <Message>
+      </Message>
       <Command>setlocal
 E:\cmake-3.10.0-win64-x64\bin\cmake.exe -E copy_directory D:/Seer/PCS/SDK/code/source_plugin/../../tools/lightvis D:/Seer/PCS/SDK/build/bin/Release/LightVis
 if %errorlevel% neq 0 goto :cmEnd
@@ -293,7 +296,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DLL_EXPORTS;_WINSOCK_DEPRECATED_NO_WARNINGS;CMAKE_INTDIR="MinSizeRel";O3D3xxCamera_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <DebugInformationFormat></DebugInformationFormat>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DLL_EXPORTS;_WINSOCK_DEPRECATED_NO_WARNINGS;CMAKE_INTDIR=\"MinSizeRel\";O3D3xxCamera_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -308,7 +312,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message>					</Message>
+      <Message>
+      </Message>
       <Command>setlocal
 E:\cmake-3.10.0-win64-x64\bin\cmake.exe -E copy_directory D:/Seer/PCS/SDK/code/source_plugin/../../tools/lightvis D:/Seer/PCS/SDK/build/bin/MinSizeRel/LightVis
 if %errorlevel% neq 0 goto :cmEnd
@@ -407,7 +412,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message>					</Message>
+      <Message>
+      </Message>
       <Command>setlocal
 E:\cmake-3.10.0-win64-x64\bin\cmake.exe -E copy_directory D:/Seer/PCS/SDK/code/source_plugin/../../tools/lightvis D:/Seer/PCS/SDK/build/bin/RelWithDebInfo/LightVis
 if %errorlevel% neq 0 goto :cmEnd
@@ -534,40 +540,20 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="D:\Seer\PCS\SDK\code\source_plugin\src\o3d3xx_camera.cpp"  />
-    <ClCompile Include="D:\Seer\PCS\SDK\code\source_plugin\src\o3d3xxSrc.cpp"  />
-    <ClCompile Include="D:\Seer\PCS\SDK\code\source_plugin\src\clientsocket.cpp"  />
+    <ClCompile Include="D:\Seer\PCS\SDK\code\source_plugin\src\o3d3xx_camera.cpp" />
+    <ClCompile Include="D:\Seer\PCS\SDK\code\source_plugin\src\o3d3xxSrc.cpp" />
+    <ClCompile Include="D:\Seer\PCS\SDK\code\source_plugin\src\clientsocket.cpp" />
     <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\pmdsdk\include\pmddatadescription.h" />
     <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\pmdsdk\include\pmdsdk2.h" />
     <ClInclude Include="D:\Seer\PCS\SDK\code\third_party\pmdsdk\include\pmdsdk2common.h" />
     <ClInclude Include="D:\Seer\PCS\SDK\code\source_plugin\include\o3d3xx_camera.hpp" />
     <ClInclude Include="D:\Seer\PCS\SDK\code\source_plugin\include\clientsocket.hpp" />
-    <ResourceCompile Include="D:\Seer\PCS\SDK\build\source_plugin\version.rc"  />
+    <ResourceCompile Include="D:\Seer\PCS\SDK\build\source_plugin\version.rc" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="D:\Seer\PCS\SDK\build\ZERO_CHECK.vcxproj">
       <Project>{404CFA70-1EDE-3300-A252-4F34EBE3B473}</Project>
       <Name>ZERO_CHECK</Name>
-    </ProjectReference>
-    <ProjectReference Include="D:\Seer\PCS\SDK\build\third_party\xmlrpc\libxmlrpc.vcxproj">
-      <Project>{34EE1954-5F0A-31C6-99EC-45F13DA6121C}</Project>
-      <Name>libxmlrpc</Name>
-    </ProjectReference>
-    <ProjectReference Include="D:\Seer\PCS\SDK\build\third_party\xmlrpc\libxmlrpc_client.vcxproj">
-      <Project>{6D6E03A6-3CBE-35FC-91EA-AA945A55690B}</Project>
-      <Name>libxmlrpc_client</Name>
-    </ProjectReference>
-    <ProjectReference Include="D:\Seer\PCS\SDK\build\third_party\xmlrpc\libxmlrpc_util.vcxproj">
-      <Project>{0931710C-C380-3015-B45F-BDDE5BEDAB0D}</Project>
-      <Name>libxmlrpc_util</Name>
-    </ProjectReference>
-    <ProjectReference Include="D:\Seer\PCS\SDK\build\third_party\xmlrpc\libxmlrpc_xmlparse.vcxproj">
-      <Project>{DE3E4DC7-431C-3008-A8C7-4D842291D758}</Project>
-      <Name>libxmlrpc_xmlparse</Name>
-    </ProjectReference>
-    <ProjectReference Include="D:\Seer\PCS\SDK\build\third_party\xmlrpc\libxmlrpc_xmltok.vcxproj">
-      <Project>{8BDB819D-85CA-323D-8719-79EE43E12BFC}</Project>
-      <Name>libxmlrpc_xmltok</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
