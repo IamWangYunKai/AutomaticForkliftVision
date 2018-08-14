@@ -1,0 +1,28 @@
+cmake_minimum_required (VERSION 3.0)
+
+project (run)
+
+file(GLOB SRCS "${PROJECT_SOURCE_DIR}/src/*.cpp")
+
+# 设置静态编译release模式
+# set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+
+# PCL库
+# 当PCL被找到之后，下面这些变量会自动进行设置，设置的值如下： 
+# (1)PCL_FOUND: 如果找到PCL，值设置为1，否则不设置 
+# (2)PCL_INCLUDE_DIRS: PCL安装的头文件以及依赖的头文件的路径 
+# (3)PCL_LIBRARIES: PCL创建和安装的共享库的名称 
+# (4)PCL_LIBRARY_DIRS: PCL共享库和依赖的第三方库的路径 
+# (5)PCL_VERSION: 找到的PCL的版本 
+# (6)PCL_COMPONENTS: 找到的所有的可用组件的列表（list） 
+# (7)PCL_DEFINITIONS: 需要进行预处理（编译）的宏（编译器标记）
+
+find_package( PCL 1.8.0 REQUIRED )
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+
+add_executable(run ${SRCS})
+
+# 链接相应的库或者模块
+target_link_libraries(run ${PCL_LIBRARIES}) 
