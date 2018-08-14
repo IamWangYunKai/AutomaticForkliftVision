@@ -1,0 +1,3 @@
+D:/Seer/PCS/cmake_projects/helloworld/build/CMakeFiles/run.dir
+D:/Seer/PCS/cmake_projects/helloworld/build/CMakeFiles/ALL_BUILD.dir
+D:/Seer/PCS/cmake_projects/helloworld/build/CMakeFiles/ZERO_CHECK.dir

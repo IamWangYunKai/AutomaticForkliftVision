@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\Seer\PCS\cmake_projects\helloworld\build\CMakeFiles\fa118e401f1e8eb5168c640801504968\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{3358CA48-F3BA-311F-9B96-D3A907EA5A7E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
