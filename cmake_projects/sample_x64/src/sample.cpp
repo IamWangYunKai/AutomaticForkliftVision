@@ -5,9 +5,9 @@
 #include <sstream>
 
 // on error, prepend absolute path to files before plugin names
-#define SOURCE_PLUGIN "O3D3xxCamera.W32.pap"
-#define SOURCE_PARAM "169.254.130.223:80:50010" // Ip Address : port Number : XmlRPC port
-#define PROC_PLUGIN "O3D3xxProc.W32.ppp"
+#define SOURCE_PLUGIN "O3D3xxCamera.W64.pap"
+#define SOURCE_PARAM "192.168.0.70:80:50010" // Ip Address : port Number : XmlRPC port
+#define PROC_PLUGIN "O3D3xxProc.W64.ppp"
 #define PROC_PARAM ""
 
 #define EXPOSURE 4000
