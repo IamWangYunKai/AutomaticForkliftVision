@@ -1,11 +1,8 @@
-cmake_minimum_required (VERSION 3.0)
+﻿cmake_minimum_required (VERSION 3.0)
 
 project (run)
 
 file(GLOB SRCS "${PROJECT_SOURCE_DIR}/src/*.cpp")
-
-# 设置静态编译release模式
-# set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
 
 # PCL库
 # 当PCL被找到之后，下面这些变量会自动进行设置，设置的值如下： 

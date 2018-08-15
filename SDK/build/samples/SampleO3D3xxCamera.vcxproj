@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -22,9 +22,8 @@
     <ProjectGuid>{5C9449C2-ACBB-320E-8432-F45A9301735E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <Platform>Win32</Platform>
-    <ProjectName>run</ProjectName>
+    <ProjectName>SampleO3D3xxCamera</ProjectName>
     <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -111,8 +110,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message>
-      </Message>
+      <Message>			</Message>
       <Command>setlocal
 E:\cmake-3.10.0-win64-x64\bin\cmake.exe -E copy D:/Seer/PCS/SDK/code/samples/../third_party/pmdsdk/bin/pmdaccess2.dll D:/Seer/PCS/SDK/build/bin/Debug/Sample/pmdaccess2.dll
 if %errorlevel% neq 0 goto :cmEnd
@@ -178,8 +176,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DLL_EXPORTS;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <DebugInformationFormat>
-      </DebugInformationFormat>
+      <DebugInformationFormat></DebugInformationFormat>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DLL_EXPORTS;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -194,8 +191,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message>
-      </Message>
+      <Message>			</Message>
       <Command>setlocal
 E:\cmake-3.10.0-win64-x64\bin\cmake.exe -E copy D:/Seer/PCS/SDK/code/samples/../third_party/pmdsdk/bin/pmdaccess2.dll D:/Seer/PCS/SDK/build/bin/Release/Sample/pmdaccess2.dll
 if %errorlevel% neq 0 goto :cmEnd
@@ -240,7 +236,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ImportLibrary>D:/Seer/PCS/SDK/build/lib/Release/SampleO3D3xxCamera.lib</ImportLibrary>
-      <ProgramDataBaseFile>D:/Seer/PCS/SDK/build/bin/Release/run.pdb</ProgramDataBaseFile>
+      <ProgramDataBaseFile>D:/Seer/PCS/SDK/build/bin/Release/SampleO3D3xxCamera.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
     </Link>
     <ProjectReference>
@@ -261,8 +257,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DLL_EXPORTS;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <DebugInformationFormat>
-      </DebugInformationFormat>
+      <DebugInformationFormat></DebugInformationFormat>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DLL_EXPORTS;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -277,8 +272,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message>
-      </Message>
+      <Message>			</Message>
       <Command>setlocal
 E:\cmake-3.10.0-win64-x64\bin\cmake.exe -E copy D:/Seer/PCS/SDK/code/samples/../third_party/pmdsdk/bin/pmdaccess2.dll D:/Seer/PCS/SDK/build/bin/MinSizeRel/Sample/pmdaccess2.dll
 if %errorlevel% neq 0 goto :cmEnd
@@ -359,8 +353,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message>
-      </Message>
+      <Message>			</Message>
       <Command>setlocal
 E:\cmake-3.10.0-win64-x64\bin\cmake.exe -E copy D:/Seer/PCS/SDK/code/samples/../third_party/pmdsdk/bin/pmdaccess2.dll D:/Seer/PCS/SDK/build/bin/RelWithDebInfo/Sample/pmdaccess2.dll
 if %errorlevel% neq 0 goto :cmEnd
@@ -469,7 +462,21 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\code\samples\src\run.cpp" />
+    <ClCompile Include="D:\Seer\PCS\SDK\code\samples\src\sample.cpp"  />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\Seer\PCS\SDK\build\ZERO_CHECK.vcxproj">
+      <Project>{404CFA70-1EDE-3300-A252-4F34EBE3B473}</Project>
+      <Name>ZERO_CHECK</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Seer\PCS\SDK\build\source_plugin\O3D3xxCamera.vcxproj">
+      <Project>{AC3AFE53-1AC6-314A-B92C-9A5D9DB644C2}</Project>
+      <Name>O3D3xxCamera</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Seer\PCS\SDK\build\processing_plugin\O3D3xxProc.vcxproj">
+      <Project>{A285CC98-5F7E-3950-B850-A692E20EEFC2}</Project>
+      <Name>O3D3xxProc</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

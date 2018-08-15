@@ -1,1 +1,0 @@
-This folder shall contains header files required by pmdsdk plugins.

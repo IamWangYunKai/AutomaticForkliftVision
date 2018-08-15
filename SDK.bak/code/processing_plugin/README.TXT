@@ -1,1 +1,0 @@
-This folder contains code related to processing plugin of O3D3xx camera.

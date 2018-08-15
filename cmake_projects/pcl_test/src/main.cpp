@@ -4,7 +4,6 @@
 #include <cmath>
 #include <time.h>
 #include <pcl/io/pcd_io.h>
-//#include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/features/normal_3d.h>
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/point_types.h>
@@ -15,12 +14,6 @@
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/common/transforms.h>
 #include <pcl/filters/passthrough.h>
-
-#include <gl/gl.h>
-#include <gl/glu.h>
-#include "vtkAutoInit.h" 
-VTK_MODULE_INIT(vtkRenderingOpenGL);
-VTK_MODULE_INIT(vtkInteractionStyle);
 
 #define DEBUG false
 
