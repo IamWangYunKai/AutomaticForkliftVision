@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="C:\Users\Administrator\Desktop\sample\src\sample.cpp">
+    <ClCompile Include="D:\Seer\PCS\cmake_projects\sample\src\sample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\Users\Administrator\Desktop\sample\CmakeLists.txt" />
+    <CustomBuild Include="D:\Seer\PCS\cmake_projects\sample\CmakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{48024CCA-2236-3EFE-B117-4B27FB4CDF79}</UniqueIdentifier>
+      <UniqueIdentifier>{4DA34631-0E74-38C4-A0B1-F3F619B277A0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
