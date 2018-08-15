@@ -1,0 +1,1 @@
+This folder shall contains header files of code of O3D3xx source plugin.
