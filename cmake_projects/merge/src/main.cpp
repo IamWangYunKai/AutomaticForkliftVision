@@ -1,5 +1,6 @@
 ﻿#define _CRT_SECURE_NO_DEPRECATE
 
+#include "camera.h"
 #include <iostream>
 #include <cmath>
 #include <time.h>
@@ -19,10 +20,11 @@
 #define DEBUG false
 using namespace std;
 
-pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-
 int main() {
-	//read_data();
+	Camera my_camera;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    my_camera.setExposureTime(4000);
+	my_camera.getData(input_cloud);
 	cout << "Reading Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	//根据摄像头外参坐标转换
 	Eigen::Affine3f transform = Eigen::Affine3f::Identity();
