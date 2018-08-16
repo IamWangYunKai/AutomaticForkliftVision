@@ -1,5 +1,7 @@
 ﻿#include "camera.h"
+#include <iostream>
 #include <time.h>
+#include <string>
 
 #define SOURCE_PLUGIN "O3D3xxCamera.W64.pap"
 #define SOURCE_PARAM "192.168.0.70:80:50010"
@@ -75,7 +77,6 @@ bool Camera::getData(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud) {
 		pmdClose(hnd);
 		return false;
 	}
-	/*
 	res = pmdGetAmplitudes(hnd, &amp[0], amp.size() * sizeof(float));
 	if (res != PMD_OK) {
 		pmdGetLastError(hnd, err, 128);
@@ -83,7 +84,6 @@ bool Camera::getData(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud) {
 		pmdClose(hnd);
 		return false;
 	}
-
 	res = pmdGetFlags(hnd, &flags[0], flags.size() * sizeof(float));
 	if (res != PMD_OK) {
 		pmdGetLastError(hnd, err, 128);
@@ -91,7 +91,7 @@ bool Camera::getData(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud) {
 		pmdClose(hnd);
 		return false;
 	}
-	*/
+
 	vector<float> xyz3Dcoordinate;
 	xyz3Dcoordinate.resize(imgHeight * imgWidth * 3);
 	res = pmdGet3DCoordinates(hnd, &xyz3Dcoordinate[0], xyz3Dcoordinate.size() * sizeof(float));
@@ -101,9 +101,8 @@ bool Camera::getData(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud) {
 		pmdClose(hnd);
 		return false;
 	}
-
 	input_cloud->clear();
-	for (int i = 0; i < xyz3Dcoordinate.size(); i++) {
+	for (int i = 0; i < flags.size(); i++) {
 		if (!(flags[i] & 1)) { // first bit is set to 1,if pixel is invalid
 			input_cloud->push_back(pcl::PointXYZ(xyz3Dcoordinate[i * 3 + 0],
 				xyz3Dcoordinate[i * 3 + 1],
@@ -122,7 +121,15 @@ bool Camera::writeData() {
 		pmdClose(hnd);
 		return false;
 	}
-
+	res = pmdGetFlags(hnd, &flags[0], flags.size() * sizeof(float));
+	if (res != PMD_OK) {
+		pmdGetLastError(hnd, err, 128);
+		cout << "Could not get flag data : " << err << endl;
+		pmdClose(hnd);
+		return false;
+	}
+	vector<float> xyz3Dcoordinate;
+	xyz3Dcoordinate.resize(imgHeight * imgWidth * 3);
 	res = pmdGet3DCoordinates(hnd, &xyz3Dcoordinate[0], xyz3Dcoordinate.size() * sizeof(float));
 	if (res != PMD_OK) {
 		pmdGetLastError(hnd, err, 128);
@@ -130,20 +137,16 @@ bool Camera::writeData() {
 		pmdClose(hnd);
 		return false;
 	}
-
-	vector<float> xyz3Dcoordinate;
-	xyz3Dcoordinate.resize(imgHeight * imgWidth * 3);
-	for (int i = 0; i < xyz3Dcoordinate.size(); i++) {
+	for (int i = 0; i < flags.size(); i++) {
 		if (!(flags[i] & 1)) { // first bit is set to 1,if pixel is invalid
 			input_cloud->push_back(pcl::PointXYZ(xyz3Dcoordinate[i * 3 + 0],
 				xyz3Dcoordinate[i * 3 + 1],
 				xyz3Dcoordinate[i * 3 + 2]));
 		}
 	}
-
 	pcl::PCDWriter writer;
 	time_t t = time(NULL);
 	char tmp[64];
-	strftime(tmp, sizeof(tmp), "%Y-%m-%d-%H:%M:%S.pcd", localtime(&t));
-	writer.write(tmp, *xyz3Dcoordinate, false);
+	strftime(tmp, sizeof(tmp), "%Y-%m-%d-%H-%M-%S.pcd", localtime(&t));
+	writer.write(string(tmp), *input_cloud, false);
 }

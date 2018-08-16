@@ -20,11 +20,11 @@ private:
 	int res;
 	PMDDataDescription dd;
 	unsigned int exposureTime;
-	//std::vector<float> amp;
-	//std::vector<unsigned> flags;
+	std::vector<float> amp;
+	std::vector<unsigned> flags;
 	int imgHeight;
 	int imgWidth;
 	char err[256];
-}
+};
 
 #endif
