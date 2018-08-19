@@ -1,0 +1,109 @@
+syntax = "proto3";
+package rbk.protocol;
+
+message Message_ActionResultParam {
+	string key = 1;
+	oneof oneof_value {
+		string string_value = 2;
+		bool bool_value = 3;
+        int32 int32_value = 4;
+		uint32 uint32_value = 5;
+		int64 int64_value = 6;
+		uint64 uint64_value = 7;
+		float float_value = 8;
+		double double_value = 9;
+		bytes bytes_value = 10;
+	}
+}
+
+message Message_ActionResult {
+	string action_name = 1;
+	uint32 action_id = 2;
+	repeated Message_ActionResultParam params = 3;
+}
+
+message Message_ActionGroupResult {
+    uint32 action_group_id = 1;
+	repeated Message_ActionResult action_results = 2;
+}
+
+message Message_TaskResult {
+	uint32 task_id = 1;
+	repeated Message_ActionGroupResult action_group_results = 2;
+}
+
+message Message_TaskListResult {
+	string name = 1;
+	uint64 time_stamp = 2;
+	repeated Message_TaskResult task_results = 3;
+}
+
+message Message_ActionParam {
+	string key = 1;
+	oneof oneof_value {
+		string string_value = 2;
+		bool bool_value = 3;
+        int32 int32_value = 4;
+		uint32 uint32_value = 5;
+		int64 int64_value = 6;
+		uint64 uint64_value = 7;
+		float float_value = 8;
+		double double_value = 9;
+		bytes bytes_value = 10;
+	}
+}
+
+message Message_Action { // 动作
+    string action_name                = 1;        // 动作属性
+    string plugin_name				  = 2;		  // 模块名称
+	repeated Message_ActionParam params = 3;      // 这个动作所要的参数
+	bool ignore_return 			      = 4;	      // 是否不关心返回就进入一下id，默认为false
+	int32 overtime					  = 5;		  // 超时结束，-1时为一直等待
+	int32 external_over_id			  = 6;		  // 外部结束的标识，-1时表示不使用外部结束触发
+	bool need_result				  = 7;		  // 用户需不需要取结果
+	uint32 sleep_time				  = 8;		  // Action执行完成后的阻塞时间，默认为0
+	uint32 action_id                  = 9;        // 在 Message_ActionGroup actions 中的下标
+}
+
+message Message_TaskStatus{
+	enum TaskListStatus {
+		StatusNone = 0;
+		Waiting = 1;
+		Running = 2;
+		Suspended = 3;
+		Completed = 4;
+		Failed = 5;
+		Canceled = 6;
+		OverTime = 7;
+	}
+	TaskListStatus task_list_status = 1;
+	string task_list_name = 2;
+	uint32 task_id = 3;
+	uint32 action_group_id = 4;
+	repeated uint32 action_ids = 5;
+	bool loop = 6;
+}
+
+message Message_ActionGroup { //并行动作组
+	repeated Message_Action actions  = 1;          // 动作
+	string action_group_name = 2;                  // 动作组描述
+	uint32 action_group_id = 3;                    // 在 Message_Task action_groups 中的下标
+	bool checked = 4;                              // 该组是否被选中要下发到rbk（roboshop使用）
+}
+
+message Message_Task { // 单个任务
+	uint32 task_id = 1;                             // 在 Message_TaskList tasks 中的下标
+	string desc = 2;                                // 任务描述
+	repeated Message_ActionGroup action_groups = 3; // 任务中需要执行的动作组
+	bool checked = 4;                               // 该任务是否被选中要下发到rbk（roboshop使用）
+}
+
+message Message_TaskDataBase {
+	repeated Message_Task tasks = 1;
+}
+
+message Message_TaskList{
+	string name = 1;					        	   // 线路名称
+	repeated Message_Task tasks = 3;				   // 所有任务
+	bool loop = 4;                             		   // 是否循环
+}

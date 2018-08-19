@@ -1,0 +1,23 @@
+syntax = "proto3";
+package rbk.protocol;
+import "message_header.proto";
+
+message Message_Localization {
+	enum UpdateReason {
+		None = 0;
+		OdoUpdate = 1;
+		LaserCorrec = 2;
+		LaserThenOdo = 3;
+	}
+	Message_Header header = 1;
+	double x = 2;
+	double y = 3;
+	double angle = 4;
+	double confidence = 5;
+	bool in_forbidden_area = 6;
+	UpdateReason update_reason = 7;
+}
+
+message Message_LocFinished{
+	bool value = 1;
+}

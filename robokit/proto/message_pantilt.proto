@@ -1,0 +1,19 @@
+syntax = "proto3";
+package rbk.protocol;
+message Message_PanTiltSpeed {
+	double tilt_speed = 1;
+	double pan_speed = 2;
+	double zoom_speed = 3;
+}
+
+message Message_PanTiltTarget {
+	double tilt_pos = 1;
+	double pan_pos = 2;
+	double zoom_pos = 3;
+}
+
+message Message_PanTiltStatus{
+	double ptz_pan = 1;
+	double ptz_tilt = 2;
+	double ptz_zoom = 3;
+}

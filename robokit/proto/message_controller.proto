@@ -1,0 +1,11 @@
+syntax = "proto3";
+package rbk.protocol;
+
+message Message_Controller {
+    double temp = 1;
+    double humi = 2;
+    double voltage = 3;
+    bool emc = 4;
+    bool brake = 5;
+    bool driverEmc = 6;
+}

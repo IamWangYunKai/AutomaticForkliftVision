@@ -1,0 +1,17 @@
+syntax = "proto3";
+package rbk.protocol;
+
+message Message_DI {
+    uint32 num = 1;
+    repeated bool id = 2;
+    repeated bool forbidden = 3;
+}
+
+message Message_DO {
+    uint32 num = 1;
+    repeated bool id = 2;
+}
+
+message Message_Astern {
+    uint32 status = 1;
+}

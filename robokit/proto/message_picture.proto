@@ -1,0 +1,15 @@
+syntax = "proto3";
+package rbk.protocol;
+message Message_Picture {
+	uint32 camera_id = 1;
+	uint32 width = 2;
+	uint32 height = 3;
+	bytes image = 4;
+	bool is_grey = 5;
+	bool is_jpg = 6;
+	uint32 length = 7;
+}
+
+message Message_StereoPicture {
+	repeated Message_Picture pics = 1;
+}
