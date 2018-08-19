@@ -26,11 +26,11 @@ int main() {
 	cout << "Reading Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	//根据摄像头内参坐标转换
 	Eigen::Affine3f transform = Eigen::Affine3f::Identity();
-	float theta_x = - 20 * M_PI / 180.0f;
+	float theta_x = - 6 * M_PI / 180.0f;
 	transform.rotate(Eigen::AngleAxisf(theta_x, Eigen::Vector3f::UnitX()));
-	float theta_z = -5 * M_PI / 180.0f;
-	transform.rotate(Eigen::AngleAxisf(theta_z, Eigen::Vector3f::UnitZ()));
-	transform.translation() << 0.0, -0.65, -0.7;
+	//float theta_z = -0 * M_PI / 180.0f;
+	//transform.rotate(Eigen::AngleAxisf(theta_z, Eigen::Vector3f::UnitZ()));
+	transform.translation() << 0.0, -0.95, -1.6;
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_tsf(new pcl::PointCloud<pcl::PointXYZ>());
 	pcl::transformPointCloud(*input_cloud, *cloud_tsf, transform);
 	cout << "Transform Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
@@ -55,7 +55,7 @@ int main() {
 			boost::this_thread::sleep(boost::posix_time::microseconds(100000));
 		}
 	}
-
+	
 	//统计滤波器去噪声
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
 	pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor_2;   //创建滤波器对象
