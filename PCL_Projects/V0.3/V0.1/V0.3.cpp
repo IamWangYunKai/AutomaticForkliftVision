@@ -59,6 +59,7 @@ int main() {
 			viewer->spinOnce(100);
 			boost::this_thread::sleep(boost::posix_time::microseconds(100000));
 		}
+		writer.write("output.pcd", *cloud_filtered, false);
 	}
 
 	//统计滤波器去噪声

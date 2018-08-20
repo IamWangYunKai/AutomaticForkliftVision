@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <CustomBuild Include="D:\Seer\PCS\cmake_projects\pcl_test\build\CMakeFiles\03f9f04f2a7f98797afd9032cc44f305\generate.stamp.rule">

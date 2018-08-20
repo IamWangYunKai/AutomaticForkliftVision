@@ -15,7 +15,7 @@
 #include <pcl/common/transforms.h>
 #include <pcl/filters/passthrough.h>
 
-#define DEBUG false
+#define DEBUG true
 
 int main() {
 	pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZ>);
