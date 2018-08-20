@@ -167,10 +167,6 @@ find_library(LUA_LIBRARY
 )
 unset(_lua_library_names)
 
-file(GLOB LUA_INCLUDE_DIR "D:/Seer/rbk_thirdparty_lib/lua-5.1.5_Win32_msvc14/include")
-file(GLOB LUA_LIBRARY "D:/Seer/rbk_thirdparty_lib/lua-5.1.5_Win32_msvc14/lib")
-file(GLOB LUA_DLL "D:/Seer/rbk_thirdparty_lib/lua-5.1.5_Win32_msvc14/lib/lua5.1.dll")
-
 if (LUA_LIBRARY)
     # include the math library for Unix
     if (UNIX AND NOT APPLE AND NOT BEOS)

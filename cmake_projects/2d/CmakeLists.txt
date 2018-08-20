@@ -1,0 +1,17 @@
+﻿cmake_minimum_required (VERSION 3.0)
+SET(PROJ_NAME "2d")
+project (${PROJ_NAME})
+
+file(GLOB SRCS "${PROJECT_SOURCE_DIR}/src/*.cpp")
+
+find_package( PCL 1.8.0 REQUIRED )
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_LIST_DIR}/bin)
+
+add_executable(${PROJ_NAME} ${SRCS})
+
+# 链接相应的库或者模块
+target_link_libraries(${PROJ_NAME} ${PCL_LIBRARIES}) 
