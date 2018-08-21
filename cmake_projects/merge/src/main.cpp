@@ -22,17 +22,18 @@ using namespace std;
 
 int main() {
 	Camera my_camera;
+	my_camera.writeTripleData();
     pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    my_camera.setExposureTime(4000);
-	my_camera.getData(input_cloud);
+    //my_camera.setExposureTime(8000);
+	my_camera.getTripleData(input_cloud);
 	cout << "Reading Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	//根据摄像头外参坐标转换
 	Eigen::Affine3f transform = Eigen::Affine3f::Identity();
-	float theta_x = - 20 * M_PI / 180.0f;
+	float theta_x = - 6.5 * M_PI / 180.0f;
 	transform.rotate(Eigen::AngleAxisf(theta_x, Eigen::Vector3f::UnitX()));
-	float theta_z = -5 * M_PI / 180.0f;
-	transform.rotate(Eigen::AngleAxisf(theta_z, Eigen::Vector3f::UnitZ()));
-	transform.translation() << 0.0, -0.65, -0.7;
+	//float theta_z = -5 * M_PI / 180.0f;
+	//transform.rotate(Eigen::AngleAxisf(theta_z, Eigen::Vector3f::UnitZ()));
+	transform.translation() << 0.0, -0.90, -1.2;
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_tsf(new pcl::PointCloud<pcl::PointXYZ>());
 	pcl::transformPointCloud(*input_cloud, *cloud_tsf, transform);
 	cout << "Transform Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
@@ -41,7 +42,7 @@ int main() {
 	pcl::PassThrough<pcl::PointXYZ> pass;
 	pass.setInputCloud(cloud_tsf);            //设置输入点云
 	pass.setFilterFieldName("y");         //设置过滤时所需要点云类型的Z字段
-	pass.setFilterLimits(-0.14, -0.03);        //设置在过滤字段的范围		
+	pass.setFilterLimits(-0.15, -0.03);        //设置在过滤字段的范围	
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered(new pcl::PointCloud<pcl::PointXYZ>);
 	pass.filter(*cloud_filtered);            //执行滤波，保存过滤结果在cloud_filtered
 	cout << "Pass through Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
@@ -57,7 +58,7 @@ int main() {
 			boost::this_thread::sleep(boost::posix_time::microseconds(100000));
 		}
 	}
-
+	
 	//统计滤波器去噪声
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
 	pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor_2;   //创建滤波器对象
@@ -120,12 +121,12 @@ int main() {
 	reg.setNumberOfNeighbours(20);
 	reg.setSmoothModeFlag(true);
 	reg.setCurvatureTestFlag(true);
-	reg.setResidualTestFlag(true);
+	//reg.setResidualTestFlag(true);
 	reg.setInputCloud(cloud_cylinder);
 	reg.setInputNormals(normals_2);
-	reg.setSmoothnessThreshold(7.0f / 180.0f * M_PI);  //判断法向量夹角
-	reg.setCurvatureThreshold(0.1);                    //判断曲率
-	reg.setResidualThreshold(0.05);                    //判断投影
+	reg.setSmoothnessThreshold(7.5f / 180.0f * M_PI);  //判断法向量夹角
+	reg.setCurvatureThreshold(1);                    //判断曲率
+	//reg.setResidualThreshold(0.05);                    //判断投影
 	std::vector <pcl::PointIndices> clusters;
 	reg.extract(clusters);
 	cout << "Region Growing Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;

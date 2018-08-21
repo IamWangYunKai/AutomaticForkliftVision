@@ -1,5 +1,6 @@
 ﻿#include "camera.h"
 #include <iostream>
+#include <time.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
 #include <pcl/visualization/cloud_viewer.h>
@@ -8,10 +9,12 @@ using namespace std;
 
 int main(){
     Camera my_camera;
-    //pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    my_camera.setExposureTime(4000);
-	//my_camera.getData(input_cloud);
-	my_camera.writeData();
+    pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    //my_camera.setExposureTime(8000);
+	my_camera.getData(input_cloud);
+	my_camera.getData(input_cloud);
+	cout << "Reading Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
+	//my_camera.writeData();
 	/*
 	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("cloud"));
 	viewer->setBackgroundColor(0, 0, 0);

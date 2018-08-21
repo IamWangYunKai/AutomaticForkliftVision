@@ -1,0 +1,13 @@
+syntax = "proto3";
+package rbk.protocol;
+import "message_header.proto";
+
+message Message_O3D3o3Point{
+	double x = 1;			// 世界坐标x
+	double y = 2;			// 世界坐标y
+	double z = 3;			// 世界坐标z
+}
+message Message_3DPointCloud {
+	Message_Header header = 1;
+	repeated Message_O3D3o3Point point = 2;
+}

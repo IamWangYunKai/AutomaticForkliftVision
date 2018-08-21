@@ -11,13 +11,16 @@
 using namespace std;
 
 Camera::Camera() {
+	cout << "Begin Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	//connect to the camera
 	res = pmdOpen(&hnd, SOURCE_PLUGIN, SOURCE_PARAM, PROC_PLUGIN, PROC_PARAM);
+	cout << "Open Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	if (res != PMD_OK) {
 		cout << "Could not connect" << endl;
 	}
 	//start to sample
 	res = pmdUpdate(hnd);
+	cout << "Update Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	if (res != PMD_OK) {
 		pmdGetLastError(hnd, err, 256);
 		cout << "Could not updateData : " << err << endl;
@@ -25,6 +28,7 @@ Camera::Camera() {
 	}
 
 	res = pmdGetSourceDataDescription(hnd, &dd);
+	cout << "Get Source Data Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	if (res != PMD_OK) {
 		pmdGetLastError(hnd, err, 128);
 		cout << "Could not get data description : " << err << endl;
@@ -48,6 +52,7 @@ Camera::~Camera() {
 bool Camera::setExposureTime(unsigned int exposure) {
 	exposureTime = exposure;
 	res = pmdSetIntegrationTime(hnd, 0, exposure);
+	cout << "Set Exposure Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	if (res != PMD_OK) {
 		pmdGetLastError(hnd, err, 128);
 		cout << "Could not set the integration time : " << err << endl;
@@ -71,6 +76,7 @@ unsigned int Camera::getExposureTime() {
 bool Camera::getData(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud) {
 	//start to sample
 	res = pmdUpdate(hnd);
+	cout << "Updata Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	if (res != PMD_OK) {
 		pmdGetLastError(hnd, err, 256);
 		cout << "Could not updateData : " << err << endl;
@@ -91,10 +97,11 @@ bool Camera::getData(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud) {
 		pmdClose(hnd);
 		return false;
 	}
-
+	cout << "Get Amp & Flags Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	vector<float> xyz3Dcoordinate;
 	xyz3Dcoordinate.resize(imgHeight * imgWidth * 3);
 	res = pmdGet3DCoordinates(hnd, &xyz3Dcoordinate[0], xyz3Dcoordinate.size() * sizeof(float));
+	cout << "Get xyz Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	if (res != PMD_OK) {
 		pmdGetLastError(hnd, err, 128);
 		cout << "Could not get xyz data : " << err << endl;
@@ -109,6 +116,7 @@ bool Camera::getData(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud) {
 				xyz3Dcoordinate[i * 3 + 2]));
 		}
 	}
+	cout << "Get Point Cloud Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 }
 
 bool Camera::writeData() {

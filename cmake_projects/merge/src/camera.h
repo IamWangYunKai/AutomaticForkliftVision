@@ -14,7 +14,11 @@ public:
 	bool setExposureTime(unsigned int exposure);
 	unsigned int getExposureTime();
 	bool getData(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud);
+	bool getDoubleData(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud);
+	bool getTripleData(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud);
 	bool writeData();
+	bool writeDoubleData();
+	bool writeTripleData();
 private:
 	PMDHandle hnd;
 	int res;
