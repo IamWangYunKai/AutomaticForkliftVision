@@ -1,0 +1,6 @@
+syntax = "proto3";
+package rbk.protocol;
+message Message_Error {
+	int32 module = 1;
+	int32 code = 2;
+}

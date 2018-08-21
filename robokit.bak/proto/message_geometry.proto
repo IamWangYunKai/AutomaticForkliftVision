@@ -1,0 +1,104 @@
+syntax = "proto3";
+package rbk.protocol;
+
+import "message_header.proto";
+
+message Message_Point{
+	double x = 1;
+	double y = 2;
+	double z = 3;
+}
+
+message Message_PointStamped{
+	Message_Header header = 1;
+	Message_Point point = 2; 
+}
+
+message Message_Polygon{
+	repeated Message_Point points = 1;
+}
+
+
+message Message_PolygonStamped{
+	Message_Header header = 1;
+	Message_Polygon polygon = 2;
+}
+
+message Message_Pose{
+	Message_Point position = 1;
+	Message_Quaternion orientation = 2;
+}
+
+message Message_PoseArray{
+	Message_Header header = 1;
+	repeated Message_Pose poses = 2;
+}
+
+message Message_PoseStamped{
+	Message_Header header = 1;
+	Message_Pose pose = 2;
+}
+
+message Message_PoseWithCovariance{
+	Message_Pose pose = 1;
+	repeated double covariance = 2;
+}
+
+message Message_PoseWithCovarianceStamped{
+	Message_Header header = 1;
+	Message_PoseWithCovariance pose = 2;
+}
+
+message Message_Quaternion{
+	double x = 1;
+	double y = 2;
+	double z = 3;
+	double w = 4;
+}
+
+message Message_QuaternionStamped{
+	Message_Header header = 1;
+	Message_Quaternion quaternion = 2;
+}
+
+message Message_Vector3{
+	double x = 1;
+	double y = 2;
+	double z = 3;
+}
+
+message Message_Vector3Stamped{
+	Message_Header header = 1;
+	Message_Vector3 vector = 2;
+}
+
+message Message_Transform{
+	Message_Vector3 translation = 1;
+	Message_Quaternion rotation = 2;
+}
+
+message Message_TransformStamped{
+	Message_Header header = 1;
+	string child_frame_id = 2;
+	Message_Transform transform = 3;
+}
+
+message Message_Twist{
+	Message_Vector3 linear = 1;
+	Message_Vector3 angular = 2;
+}
+
+message Message_TwistStamped{
+	Message_Header header = 1;
+	Message_Twist twist = 2;
+}
+
+message Message_TwistWithCovariance{
+	Message_Twist twist = 1;
+	repeated double covariance = 2;
+}
+
+message Message_TwistWithCovarianceStamped{
+	Message_Header header = 1;
+	Message_TwistWithCovariance twist = 2;
+}

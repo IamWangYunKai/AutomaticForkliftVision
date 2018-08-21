@@ -1,0 +1,25 @@
+{
+    "laser": {
+        "num": 1,
+        "index": [
+            {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "r": 0.0
+            }
+        ]
+    },
+    "chassis": {
+        "wheelRadius": [0.0, 0.0, 0.0, 0.0],
+        "A": 0.0,
+        "B": 0.0,
+        "theta": 0.0,
+        "alpha": 0.0
+    },
+    "capability": {
+        "minXSpeed": 0.000,
+        "minYSpeed": 0.000,
+        "minWSpeed": 0.000
+    }
+}

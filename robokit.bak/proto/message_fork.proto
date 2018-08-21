@@ -1,0 +1,28 @@
+syntax = "proto3";
+package rbk.protocol;
+message Message_Fork {
+	double 	height 				= 1;
+	double	incline 			= 2;
+	double 	fork_val			= 3;
+	double 	incline_val			= 4;
+	int32	fork_error			= 5;
+	bool 	height_in_place 	= 6;
+	bool	incline_in_place 	= 7;
+	bool 	get_goods			= 8;
+	bool	auto_flag			= 9;
+}
+
+message Message_Fork_Downward {
+	int32	type				= 1;
+	int32	pump				= 2;
+	int32	encodeline			= 3;
+	int32	pressureSensor		= 4;
+	float 	minHeight			= 5;
+	float 	maxHeight			= 6;
+	int32	CAN_ID				= 7;
+	float	max_angle			= 8;
+	float 	min_angle			= 9;
+	float	driverPeriod		= 10;
+	float 	upBuffer			= 11;
+	float 	downBuffer			= 12;
+}

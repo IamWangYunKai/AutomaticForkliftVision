@@ -1,0 +1,9 @@
+syntax = "proto3";
+package rbk.protocol;
+message Message_Battery {
+	double percetage = 1;
+	double charge_current = 2;
+	double charge_voltage = 3;
+	bool is_charging = 4;
+	double temperature = 5;
+}

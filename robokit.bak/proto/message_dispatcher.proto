@@ -1,0 +1,115 @@
+syntax = "proto3";
+package dispatcher.protocol;
+
+import "message_map.proto";
+
+// for golang
+//option go_package = "protocol";
+
+message Wrapper{
+  string type = 1;
+  string uuid = 2;
+  bytes data = 3;
+  rbk.protocol.Message_MapProperty aa = 4;
+}
+
+// 调度系统 -> 机器人
+message RobotSubTask{
+  string sub_task_id = 1;   // 子任务id
+
+  enum Command{
+    STANDBY = 0;   // 去待命区
+    CHARGE = 1;    // 充电
+    TRANSPORT = 2; // 运输
+    GO = 3;        // 去某一点
+    RELOC = 4;     // 重定位
+    STOP = 5;      // 马上停止
+  }
+
+  Command command = 2;       // 任务种类
+  string parent_task_id = 3; // 所属任务id
+  string worker_id = 4;      // 子任务对应的操作员id
+  string robot_id = 5;       // 机器人id
+  string region_id = 6;      // 子任务对应货区的id
+  string wait_area_id = 7;   // 等待区域id
+  int32 item_num = 8;       // 子任务包含的物件数量(格子数量＊每个格子中物件的数量)
+  int32 grid_num = 9;       // 格子数量（与子任务相关的格子数量）
+
+  message Grid{                      // 子任务中的每个货物格子
+    int32 id = 1;           // 格子的id
+    int32 item_num = 2;     // 该格子中物件数量
+
+    message Item{
+      string name = 1;       // 物件名称
+      string type = 2;       // 物件种类
+      string barcode = 3;    // 条形码
+    }
+
+    repeated Item items = 3;         // 物件
+  }
+
+  repeated Grid grids = 10;           // 格子
+
+  RobotPosition position = 11;   // 位置，用于GO，RELOC指令
+
+  string rule = 12;          // 规则，暂时忽略
+}
+
+// 机器人位置
+message RobotPosition{
+  int32 x = 1;
+  int32 y = 2;
+  double r = 3;
+}
+
+enum RobotState{
+  STANDBY = 0;   // 待命中
+  MOVEING = 1;   // 移动中
+  WAITING = 2;   // 等待中
+  PICKING = 3;   // 配货中
+  UNLOADING = 4; // 卸货中
+  CHARGEING = 5; // 充电中
+  EMERGENCY_RESET = 6; // 紧急重置
+  EMERGENCY_STOP = 7;  // 急停开关被拍下
+}
+
+// 机器人状态,每隔5秒
+message RobotStatus{
+  string robot_id = 1;
+  double battery_level = 2;
+  double velocity = 3;
+  RobotPosition position = 4;
+  double confidence = 5;
+  string sub_task_id = 6;
+  RobotState state = 7;
+  string warning = 8;
+}
+
+// 用于每次消息的确认，每次调度系统给机器人发消息或者机器人给调度系统发消息都需要确认才能进行下一步逻辑， 机器人状态消息除外
+message RobotConfirm{
+  bool got = 1;
+}
+
+message RobotStateChange{
+  RobotState current_state = 1;  // 当前状态
+  RobotState last_state = 2;     // 之前状态
+
+  // 机器人的事件
+  enum RobotEvent {
+    START_PICK = 0;
+    COMPLETE_PICK = 1;
+    START_UNLOAD = 2;
+    COMPLETE_UNLOAD = 3;
+    REACH_TARGET = 4;
+    START_MOVE = 5;
+    EMERGENCY_RESET = 6;
+    EMERGENCY_STOP = 7;
+  }
+
+  RobotEvent event = 3;          // 触发的事件
+
+  string region_id = 4;      // 货区的id, 若current_state=1，则为目标货区的id
+                                     //          若current_state=2,3，则为所在货区的id
+                                     //          若current_state=4，则为卸货区的id
+                                     //          若current_state=5，则为充电区的id
+}

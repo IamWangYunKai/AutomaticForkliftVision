@@ -1,0 +1,12 @@
+syntax = "proto3";
+package rbk.protocol;
+
+message Message_InfraredNode {
+	int32 id = 1;
+	bool detected = 2;
+}
+
+message Message_Infrared {
+	uint32 cycle = 1;
+	repeated Message_InfraredNode nodes = 2;
+}

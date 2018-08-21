@@ -1,0 +1,14 @@
+syntax = "proto3";
+package rbk.protocol;
+import "message_header.proto";
+
+message Message_RFIDNode{
+    uint32 id = 1;
+    uint32 count = 2;
+    Message_Header header = 3;
+    uint32 strength = 4;
+}
+
+message Message_RFID{
+    repeated Message_RFIDNode rfid_nodes = 1;
+}

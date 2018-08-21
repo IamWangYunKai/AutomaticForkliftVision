@@ -1,0 +1,140 @@
+syntax = "proto3";
+package rbk.protocol;
+import "message_header.proto";
+
+message Message_LaserInstallInfo{
+	double x = 1;
+	double y = 2;
+	double z = 3;
+	double yaw = 4;
+	bool upside = 5;
+}
+message Message_LaserDeviceInfo{
+	string device_name = 1;
+	double min_range = 2;
+	double max_range = 3;
+	double min_angle = 4;
+	double max_angle = 5;	
+	double real_step = 6;
+	double pub_step = 7;
+	double time_increment = 8;
+	double scan_freq = 9;
+}
+
+message Message_LaserBeam{
+	Message_Header header = 1;
+	double 	angle = 2;
+	double 	dist  = 3;
+	double x = 4;
+	double y = 5;
+	double  rssi = 6;
+	bool	valid = 7;
+	bool	is_virtual = 8;
+	bool	is_obstacle = 9;
+}
+message Message_LaserBeam3D{
+	uint32 id= 1;
+	float x= 2;
+	float y= 3;
+	float z= 4;
+	uint32 intensity= 5;
+}
+message Message_Laser{
+	Message_LaserDeviceInfo device_info = 1;
+	Message_LaserInstallInfo install_info = 2;
+	Message_Header header = 3;
+	repeated Message_LaserBeam  beams = 4;
+	repeated Message_LaserBeam3D beams3D= 5;
+}
+
+message Message_AllLasers{
+	repeated Message_Laser laser = 1;
+}
+
+message Message_LaserClusterFeature{
+	double avg_rssi = 1;
+	double num_points = 2;
+	double std = 3;
+	double avg_median_dev = 4;
+	double prev_jump = 5;
+	double next_jump = 6;
+	double width = 7;
+	double linearity = 8;
+	double circularity = 9;
+	double radius = 10;
+	double boundary_length = 11;
+	double ang_diff = 12;
+	double mean_curvature = 13;
+	double boundary_regularity = 14;
+	double iav = 15;
+	double std_iav = 16;
+}
+
+message Message_LaserCluster
+{
+	Message_LaserDeviceInfo device_info = 1;
+	Message_LaserInstallInfo install_info = 2;
+	Message_Header header = 3;
+	repeated Message_LaserBeam beams = 4;
+	Message_LaserClusterFeature features = 5;
+}
+
+message Message_LaserSegResult{
+	Message_Header header = 1;
+	repeated Message_LaserCluster clusters = 2;
+}
+
+message Message_SensorPoint {
+	double x = 1;			// 世界坐标x
+	double y = 2;			// 世界坐标y
+	double z = 3;			// 世界坐标z
+	bool is_obstacle = 4;	// 是否是障碍物
+	double rssi = 5;		// 如果是激光则为rssi，其他为-1
+}
+
+message Message_SensorPointCluster{
+	enum Type{
+		Ultrasonic = 0;
+		Laser = 1;
+		Fallingdown = 2;
+		Collision = 3;
+		Infrared = 4;
+		VirtualPoint = 5;
+		APIObstacle = 6;
+		ReservedPoint = 7;
+        DiUltrasonic = 8;
+	}
+	Message_Header header = 1;			// 各种类型的数据的时间戳
+	Type type = 2;						// 点云数据的类型
+	string id = 3;						// 点云类型的id号，如果是激光的话，为index，APIObstacle则为障碍物名称
+	repeated Message_SensorPoint point= 4;
+}
+
+message Message_SensorPointCloud {
+	repeated Message_SensorPointCluster cluster = 1;
+}
+
+message Message_LaserPoint {
+	enum Type{
+		Ultrasonic = 0;
+		Laser = 1;
+		Fallingdown = 2;
+		Collision = 3;
+		Infrared = 4;
+		VirtualPoint = 5;
+		APIObstacle = 6;
+	}
+	double x = 1;			// 世界坐标x
+	double y = 2;			// 世界坐标y
+	double z = 3;			// 世界坐标z
+	Type type = 4;			// 点云数据的类型
+	string id = 5;			// 点云类型的id号，如果是激光的话，为index，APIObstacle则为障碍物名称
+	bool is_obstacle = 6;	// 是否是障碍物
+	double rssi = 7;		// 如果是激光则为rssi，其他为-1
+	uint64 data_nsec = 8;	// 这个点的时间
+}
+
+message Message_LaserPointCloud {
+	Message_Header header = 1;
+	repeated Message_LaserPoint point= 2;
+}

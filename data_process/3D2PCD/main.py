@@ -10,10 +10,10 @@ head = ['# .PCD v0.7 - Point Cloud Data file format\n',
         'VERSION 0.7\n', 'FIELDS x y z\n', 
         'SIZE 4 4 4\n', 'TYPE F F F\n', 
         'COUNT 1 1 1\n', 
-        'WIDTH 100000\n', 
+        'WIDTH 10000\n', 
         'HEIGHT 1\n', 
         'VIEWPOINT 0 0 0 1 0 0 0\n', 
-        'POINTS 100000\n', 
+        'POINTS 10000\n', 
         'DATA ascii\n']
 
 class Point(object):
@@ -25,7 +25,7 @@ class Point(object):
 points = []
 re_points = []
 
-filename = 'pallet'
+filename = 'zhanban'
 #读取pcd文件,从pcd的第12行开始是三维点
 with open(filename+'.pcd', 'r') as f:
     for line in f.readlines()[11:len(f.readlines())-1]:

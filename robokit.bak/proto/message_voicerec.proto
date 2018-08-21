@@ -1,0 +1,5 @@
+syntax = "proto3";
+package rbk.protocol;
+message Message_VoiceRec {
+	bytes msg = 1;
+}
