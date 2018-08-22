@@ -25,19 +25,21 @@ public:
 	Camera();
 	~Camera();
 	void run();
-	std::vector<double> RecogniseTray();
+	std::vector<float> RecogniseTray();
 	void loadFromConfigFile();
 	void setSubscriberCallBack();
 
 public:
 	bool setExposureTime(unsigned int exposure);
 	unsigned int getExposureTime();
+	bool getPointCloud(std::vector<float> &pointcloud);
 	bool getData(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud);
 	bool getDoubleData(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud);
 	bool getTripleData(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud);
 	bool writeData();
 	bool writeDoubleData();
 	bool writeTripleData();
+	void getResult(std::vector<float> &result);
 private:
 	PMDHandle hnd;
 	int res;

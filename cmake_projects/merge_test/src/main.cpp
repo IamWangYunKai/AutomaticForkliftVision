@@ -3,6 +3,7 @@
 //#include "camera.h"
 #include <iostream>
 #include <cmath>
+#include <math.h>
 #include <time.h>
 #include <vector>
 #include <pcl/io/pcd_io.h>
@@ -16,6 +17,8 @@
 #include <pcl/filters/passthrough.h>
 #include <pcl/filters/extract_indices.h>
 #include <pcl/filters/statistical_outlier_removal.h>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 
 #define DEBUG false
 using namespace std;
@@ -36,7 +39,8 @@ int main() {
 	transform.rotate(Eigen::AngleAxisf(theta_x, Eigen::Vector3f::UnitX()));
 	//float theta_z = -5 * M_PI / 180.0f;
 	//transform.rotate(Eigen::AngleAxisf(theta_z, Eigen::Vector3f::UnitZ()));
-	transform.translation() << 0.0, -0.90, -1.2;
+	//transform.translation() << 0.0, -0.90, -1.2;
+	transform.translation() << 0.0, -0.90, 0.0;
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_tsf(new pcl::PointCloud<pcl::PointXYZ>());
 	pcl::transformPointCloud(*input_cloud, *cloud_tsf, transform);
 	cout << "Transform Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
@@ -206,6 +210,20 @@ int main() {
 	pallet_center_final[0] /= total_size;
 	pallet_center_final[1] /= total_size;
 	pallet_center_final[2] /= total_size;
+
+	vector<float> result;
+	float theta = atan2(pallet_normal_final[2], pallet_normal_final[0]);
+	Eigen::AngleAxisd rotation_vector(0, Eigen::Vector3d(0, 1, 0));
+	Eigen::Quaterniond q = Eigen::Quaterniond(rotation_vector);
+
+	result.clear();
+	result.push_back(pallet_center_final[0]);
+	result.push_back(pallet_center_final[1]);
+	result.push_back(pallet_center_final[2]);
+	result.push_back(q.x());
+	result.push_back(q.y());
+	result.push_back(q.z());
+	result.push_back(q.w());
 	
 	for (int i = 0; i < total_size; i++) {
 		cout << "Delta theta : ";
@@ -224,6 +242,12 @@ int main() {
 			       + pow(center->points[i].z - pallet_center_final[2], 2)) << endl;
 	}
 
+	cout << "Result: "
+	for(int i=0; i < 7; i ++){
+		cout <<result[i] << " ";
+	}
+	cout << endl;
+	
 	cout << "Totle Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	
 	//可视化
