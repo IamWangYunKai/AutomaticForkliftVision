@@ -1,7 +1,0 @@
-syntax = "proto3";
-package rbk.protocol;
-
-message Message_Encoder{
-	uint32 encID = 1;
-	int32 value = 2;	// cnt
-}

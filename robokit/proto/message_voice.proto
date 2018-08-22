@@ -1,6 +1,0 @@
-syntax = "proto3";
-package rbk.protocol;
-message Message_Voice {
-	int32 length = 1;
-	bytes data = 2;
-}

@@ -1,9 +1,0 @@
-syntax = "proto3";
-package rbk.protocol;
-message Message_TTS {
-	string	str = 1;
-	bool   is_setting = 2;
-	int32	voiceId = 3;
-	int32	speed = 4;
-	int32	volumn = 5;
-}

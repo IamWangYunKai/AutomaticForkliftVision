@@ -1,6 +1,0 @@
-syntax = "proto3";
-package rbk.protocol;
-message Message_Arm {
-	string action = 1;
-	double param1 = 2;
-}

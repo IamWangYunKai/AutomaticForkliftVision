@@ -1,3 +1,0 @@
-rbk.protocol.Message_ChassisConfig.R        max_count:4
-rbk.protocol.Message_ChassisConfig.driveID  max_count:4
-rbk.protocol.Message_ChassisConfig.Inverse  max_count:4

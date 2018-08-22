@@ -1,7 +1,0 @@
-﻿syntax = "proto3";
-package rbk.protocol;
-
-message Message_Environment {
-    double temperature		= 1;	// 温度
-    double humidity			= 2;	// 湿度
-}
