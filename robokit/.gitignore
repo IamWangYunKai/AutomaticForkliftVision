@@ -94,7 +94,7 @@ lib
 *.stackdump
 
 # ignore plugins
-plugins
+# plugins
 
 # ignore algorithms
 src/robokit/algorithm
