@@ -39,8 +39,8 @@ int main() {
 	transform.rotate(Eigen::AngleAxisf(theta_x, Eigen::Vector3f::UnitX()));
 	//float theta_z = -5 * M_PI / 180.0f;
 	//transform.rotate(Eigen::AngleAxisf(theta_z, Eigen::Vector3f::UnitZ()));
-	transform.translation() << 0.0, -0.90, -1.2;
-	//transform.translation() << 0.0, -0.90, 0.0;
+	//transform.translation() << 0.0, -0.90, -1.2;
+	transform.translation() << 0.0, -0.90, 0.0;
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_tsf(new pcl::PointCloud<pcl::PointXYZ>());
 	pcl::transformPointCloud(*input_cloud, *cloud_tsf, transform);
 	cout << "Transform Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
@@ -56,7 +56,7 @@ int main() {
 	pcl::PassThrough<pcl::PointXYZ> pass2;
 	pass2.setInputCloud(cloud_filtered2);            //设置输入点云
 	pass2.setFilterFieldName("z");         //设置过滤时所需要点云类型的Z字段
-	pass2.setFilterLimits(0.0, 2.0);        //设置在过滤字段的范围	
+	pass2.setFilterLimits(1.2, 3.2);        //设置在过滤字段的范围	
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered(new pcl::PointCloud<pcl::PointXYZ>);
 	pass2.filter(*cloud_filtered);            //执行滤波，保存过滤结果在cloud_filtered
 

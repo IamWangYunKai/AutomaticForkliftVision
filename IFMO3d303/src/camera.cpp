@@ -19,15 +19,19 @@
 #include <Eigen/Geometry>
 
 #define SOURCE_PLUGIN "O3D3xxCamera.W32.pap"
-#define SOURCE_PARAM "192.168.0.70:80:50010"
+#define SOURCE_PARAM "192.168.0.70:80:50010"	//摄像头IP地址
 #define PROC_PLUGIN "O3D3xxProc.W32.ppp"
 #define PROC_PARAM ""
 
 namespace {
-	bool SEE_RESULT = false;
-	int maxExposureTime = 8000;
-	int minExposureTime = 4000;
-	float height = -0.90;
+	const bool SEE_RESULT = false;
+	const float minRange = 1.2;								//最近能看到的栈板距离 （m）
+	const float maxRange = 3.2;								//最远能看到的栈板距离 （m）
+	const float pitchAngle = -6.5 * M_PI / 180.0f;			//摄像头俯仰角 （°）
+	const int maxExposureTime = 8000;						//最大的曝光时间 （μs）
+	const int minExposureTime = 4000;
+	const float height = -0.90;								//摄像头距离地面的高度 （m）
+	const float smoothnessThreshold = 12.0f * M_PI / 180.0f;//区域增长的结束条件 （°）
 };
 
 using namespace std;
@@ -593,17 +597,14 @@ bool Camera::writeTripleData() {
 
 void Camera::getResult(vector<float> &result) {
 	pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-	//my_camera.setExposureTime(8000);
-	getDoubleData(input_cloud);//getTripleData(input_cloud);
+	getDoubleData(input_cloud);
 	cout << "Reading Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
 	//根据摄像头外参坐标转换
 	Eigen::Affine3f transform = Eigen::Affine3f::Identity();
-	float theta_x = -6.5 * M_PI / 180.0f;
-	transform.rotate(Eigen::AngleAxisf(theta_x, Eigen::Vector3f::UnitX()));
+	transform.rotate(Eigen::AngleAxisf(pitchAngle, Eigen::Vector3f::UnitX()));
 	//float theta_z = -5 * M_PI / 180.0f;
 	//transform.rotate(Eigen::AngleAxisf(theta_z, Eigen::Vector3f::UnitZ()));
-	//transform.translation() << 0.0, height, -1.2;
-	transform.translation() << 0.0, height, 0;
+	transform.translation() << 0.0, height, 0.0;
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_tsf(new pcl::PointCloud<pcl::PointXYZ>());
 	pcl::transformPointCloud(*input_cloud, *cloud_tsf, transform);
 
@@ -612,16 +613,23 @@ void Camera::getResult(vector<float> &result) {
 	pass.setInputCloud(cloud_tsf);            //设置输入点云
 	pass.setFilterFieldName("y");         //设置过滤时所需要点云类型的Z字段
 	pass.setFilterLimits(-0.15, -0.03);        //设置在过滤字段的范围	
+	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered2(new pcl::PointCloud<pcl::PointXYZ>);
+	pass.filter(*cloud_filtered2);            //执行滤波，保存过滤结果在cloud_filtered
+
+	pcl::PassThrough<pcl::PointXYZ> pass2;
+	pass2.setInputCloud(cloud_filtered2);            //设置输入点云
+	pass2.setFilterFieldName("z");         //设置过滤时所需要点云类型的Z字段
+	pass2.setFilterLimits(minRange, maxRange);        //设置在过滤字段的范围	
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered(new pcl::PointCloud<pcl::PointXYZ>);
-	pass.filter(*cloud_filtered);            //执行滤波，保存过滤结果在cloud_filtered
+	pass2.filter(*cloud_filtered);            //执行滤波，保存过滤结果在cloud_filtered          //执行滤波，保存过滤结果在cloud_filtered
 
 	//统计滤波器去噪声
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-	pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor_2;   //创建滤波器对象
-	sor_2.setInputCloud(cloud_filtered);                           //设置待滤波的点云
-	sor_2.setMeanK(20);                               //设置在进行统计时考虑查询点临近点数
-	sor_2.setStddevMulThresh(0.5);                    //设置判断是否为离群点的阀值
-	sor_2.filter(*cloud);                    //存储
+	pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;   //创建滤波器对象
+	sor.setInputCloud(cloud_filtered);                           //设置待滤波的点云
+	sor.setMeanK(20);                               //设置在进行统计时考虑查询点临近点数
+	sor.setStddevMulThresh(0.5);                    //设置判断是否为离群点的阀值
+	sor.filter(*cloud);                    //存储
 
 	//法向量估计
 	pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
@@ -631,8 +639,8 @@ void Camera::getResult(vector<float> &result) {
 	pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>);
 	ne.setKSearch(20);
 	ne.compute(*normals);
-	pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals(new pcl::PointCloud<pcl::PointNormal>);
-	pcl::concatenateFields(*cloud, *normals, *cloud_with_normals);
+	//pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals(new pcl::PointCloud<pcl::PointNormal>);
+	//pcl::concatenateFields(*cloud, *normals, *cloud_with_normals);
 
 	//采用RANSAC分割地面
 	pcl::SACSegmentationFromNormals<pcl::PointXYZ, pcl::Normal> seg;
@@ -650,20 +658,20 @@ void Camera::getResult(vector<float> &result) {
 	seg.segment(*inliers_plane, *coefficients_plane);
 	extract.setInputCloud(cloud);
 	extract.setIndices(inliers_plane);
-	extract.setNegative(true);            //保留平面意外的区域
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_cylinder(new pcl::PointCloud<pcl::PointXYZ>());
-	extract.filter(*cloud_cylinder);
+	extract.setNegative(true);            //保留平面以外的区域
+	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_ransac(new pcl::PointCloud<pcl::PointXYZ>());
+	extract.filter(*cloud_ransac);
 
 	//法向量重新估计
 	pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne_2;
-	ne_2.setInputCloud(cloud_cylinder);
+	ne_2.setInputCloud(cloud_ransac);
 	pcl::search::KdTree<pcl::PointXYZ>::Ptr tree_2(new pcl::search::KdTree<pcl::PointXYZ>());
 	ne_2.setSearchMethod(tree_2);
 	pcl::PointCloud<pcl::Normal>::Ptr normals_2(new pcl::PointCloud<pcl::Normal>);
 	ne_2.setKSearch(20);
 	ne_2.compute(*normals_2);
-	pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals_2(new pcl::PointCloud<pcl::PointNormal>);
-	pcl::concatenateFields(*cloud_cylinder, *normals_2, *cloud_with_normals_2);
+	//pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals_2(new pcl::PointCloud<pcl::PointNormal>);
+	//pcl::concatenateFields(*cloud_ransac, *normals_2, *cloud_with_normals_2);
 
 	//区域增长算法找到三个端面
 	pcl::RegionGrowing<pcl::PointXYZ, pcl::Normal> reg;
@@ -673,10 +681,12 @@ void Camera::getResult(vector<float> &result) {
 	reg.setNumberOfNeighbours(20);
 	reg.setSmoothModeFlag(true);
 	reg.setCurvatureTestFlag(true);
-	reg.setInputCloud(cloud_cylinder);
+	//reg.setResidualTestFlag(true);
+	reg.setInputCloud(cloud_ransac);
 	reg.setInputNormals(normals_2);
-	reg.setSmoothnessThreshold(7.5f / 180.0f * M_PI);  //判断法向量夹角
+	reg.setSmoothnessThreshold(smoothnessThreshold);  //判断法向量夹角
 	reg.setCurvatureThreshold(1);                    //判断曲率
+	//reg.setResidualThreshold(0.05);                    //判断投影
 	std::vector <pcl::PointIndices> clusters;
 	reg.extract(clusters);
 	cout << "Number of clusters is equal to " << clusters.size() << endl;
@@ -685,13 +695,6 @@ void Camera::getResult(vector<float> &result) {
 	pcl::PointCloud<pcl::PointXYZ>::Ptr center(new pcl::PointCloud<pcl::PointXYZ>());     //三个面的中心坐标
 	if (clusters.size() < 2) {
 		cout << "No enough clusters !" << endl;
-		result.clear();
-		result.push_back(-999);
-		result.push_back(-999);
-		result.push_back(-999);
-		result.push_back(-999);
-		result.push_back(-999);
-		result.push_back(-999);
 		exit(0);
 	}
 	for (int num = 0; num < clusters.size(); num++) {
@@ -701,7 +704,7 @@ void Camera::getResult(vector<float> &result) {
 		pcl::PointCloud<pcl::Normal>::Ptr normals_4(new pcl::PointCloud<pcl::Normal>);
 		normals_4->clear();
 		for (int i = 0;i < clusters[num].indices.size();i++) {
-			pallet->push_back(cloud_cylinder->points[clusters[num].indices[i]]);
+			pallet->push_back(cloud_ransac->points[clusters[num].indices[i]]);
 			normals_4->push_back(normals_2->points[clusters[num].indices[i]]);
 		}
 
@@ -825,7 +828,7 @@ void Camera::run(){
 			pointcloud.mutable_header()->set_frame_id("/O3D303");
 		}
 		publishTopic(pointcloud);
-		SLEEP(50); 
+		SLEEP(500); 
 	}
 }
 //服务

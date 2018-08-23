@@ -78,7 +78,9 @@
 #include <boost/interprocess/permissions.hpp>
 #endif
 #include <boost/iostreams/device/mapped_file.hpp>
-#define BOOST_PARAMETER_MAX_ARITY 7
+#ifndef BOOST_PARAMETER_MAX_ARITY
+	#define BOOST_PARAMETER_MAX_ARITY 7
+#endif
 #include <boost/signals2.hpp>
 #include <boost/signals2/slot.hpp>
 #endif

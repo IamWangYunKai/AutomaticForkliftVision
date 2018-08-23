@@ -48,7 +48,9 @@
 #ifndef Q_MOC_RUN
 #include <boost/function.hpp>
 #include <boost/shared_array.hpp>
-#define BOOST_PARAMETER_MAX_ARITY 7
+#ifndef BOOST_PARAMETER_MAX_ARITY
+	#define BOOST_PARAMETER_MAX_ARITY 7
+#endif
 #include <boost/signals2.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/algorithm/string.hpp>
