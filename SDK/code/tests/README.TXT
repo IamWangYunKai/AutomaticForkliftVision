@@ -1,1 +1,0 @@
-This folder shall contains source code of tests written using gtest framework.

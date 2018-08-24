@@ -1,26 +1,29 @@
-# PCS
-Point Cloud Segmentation for O3D303 Camera
+#Introduction
 
-Use cmake 3.10.0 & VS2015 32bit 
+In this repository, we want to automate forklifts .
+
+We use our industrial control board (with Windows 7 system) and RBK framework(with SLAM and multi-agent scheduling) to let them move automatically. 
+
+We use IFM O3D303 Camera and PCL 1.8.0 (32 bit, with Boost 1.63) to identify pallets and use single line laser to identify shelves. Forklifts will avoid the shelves, and find the pallets and lift them to some designated places.
+
+In this repository, we just pay our attention to the ***identification module*** !
 
 # Quick Start
 
-Use CMake GUI,
+## Identify Pallets
 
-Choose your source code path:  PCS\SDK\code
-
-Choose your build path:  PCS\SDK\build
-
-Click "Configure" , choose VS2015 32 bit compiler (Not 64 bit ! ) and choose only "O#D#XX_SAMPLE_CODES_BUILD_ALL"
-
-Then generate it and open this project in VS2015
-
-Find sample.cpp in SampleO3D3xxCamera and change your camera's Ip adrdess, for example:
-
-```C
-#define SOURCE_PARAM "169.254.130.223:80:50010"
+```bash
+cd cmake_projects/merge_independent_x86
+build.bat
 ```
 
-Compile all projects and find PCS\SDK\build\bin\Release\LightVis\LightVis.exe
 
-Change your camera IP in lv.cfg (in the same path with LightVis.exe) and then just open LightVis.exe !
+
+##Identify Shelves
+
+```bash
+cd cmake_projects/MeanShift_wash
+make
+.\MeanShift.exe
+```
+

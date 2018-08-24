@@ -1,1 +1,0 @@
-This folder shall contains files of source code of gtest library.
