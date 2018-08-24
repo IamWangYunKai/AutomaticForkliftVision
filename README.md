@@ -1,4 +1,4 @@
-#Introduction
+# Introduction
 
 In this repository, we want to automate forklifts .
 
@@ -19,11 +19,10 @@ build.bat
 
 
 
-##Identify Shelves
+## Identify Shelves
 
 ```bash
 cd cmake_projects/MeanShift_wash
 make
 .\MeanShift.exe
 ```
-
