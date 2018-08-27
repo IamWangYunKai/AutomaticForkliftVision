@@ -126,16 +126,8 @@ IF(WIN32)
     )
 	# 头文件
     file(GLOB HEADERS  ${CMAKE_CURRENT_LIST_DIR}/include/third_party/pmdsdk/include
-                       ${CMAKE_CURRENT_LIST_DIR}/include/third_party/xmlrpc/include
-                       ${CMAKE_CURRENT_LIST_DIR}/include/third_party/xmlrpc/lib/expat/xmlparse
-                       ${CMAKE_CURRENT_LIST_DIR}/include/third_party/xmlrpc/lib/util/include
-                       ${CMAKE_CURRENT_LIST_DIR}/include/third_party/xmlrpc/lib
-                       ${CMAKE_CURRENT_LIST_DIR}/include/third_party/xmlrpc/examples
-                       ${CMAKE_CURRENT_LIST_DIR}/include/third_party/xmlrpc
-                       ${CMAKE_CURRENT_LIST_DIR}/include/source_plugin/include
                        ${CMAKE_CURRENT_LIST_DIR}/include/third_party/pcl/include/pcl-1.8
                        ${CMAKE_CURRENT_LIST_DIR}/include/third_party/flann/include
-                       ${CMAKE_CURRENT_LIST_DIR}/include/third_party/vtk/include/vtk-8.0
 
                 )
 	# 库文件
@@ -143,12 +135,7 @@ IF(WIN32)
                     # ${PCL_LIBRARY_DIRS}
                     ${CMAKE_CURRENT_LIST_DIR}/include/third_party/pcl/lib
                     ${CMAKE_CURRENT_LIST_DIR}/include/third_party/flann/lib
-                    ${CMAKE_CURRENT_LIST_DIR}/include/third_party/vtk/lib
                     )
-    file(GLOB DLL_DIRS  "${CMAKE_CURRENT_LIST_DIR}/include/third_party/pmdsdk/bin/pmdaccess2.dll"
-                        "${CMAKE_CURRENT_LIST_DIR}/include/O3D303_plugins/O3D3xxCamera.W32.pap"
-                        "${CMAKE_CURRENT_LIST_DIR}/include/O3D303_plugins/O3D3xxProc.W32.ppp")
-    
 
 	include_directories(${HEADERS})
 	link_directories(${LIB_DIRS})
@@ -173,7 +160,6 @@ IF(WIN32)
             ${CMAKE_CURRENT_LIST_DIR}/include/third_party/pmdsdk/lib/pmdaccess2.lib
             ${CMAKE_CURRENT_LIST_DIR}/include/third_party/pcl/lib/*.lib
             ${CMAKE_CURRENT_LIST_DIR}/include/third_party/flann/lib/*.lib
-            ${CMAKE_CURRENT_LIST_DIR}/include/third_party/vtk/lib/*.lib
             AdvAPI32.Lib
             ComDlg32.Lib
             Gdi32.Lib

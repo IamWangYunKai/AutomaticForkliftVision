@@ -6,7 +6,6 @@
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
 #include <pcl/common/transforms.h>
-#include <pcl/visualization/cloud_viewer.h>
 #include <pcl/features/eigen.h>
 #include <pcl/features/normal_3d.h>
 #include <pcl/segmentation/region_growing.h>
@@ -24,7 +23,6 @@
 #define PROC_PARAM ""
 
 namespace {
-	const bool SEE_RESULT = false;
 	const float minRange = 1.2;								//最近能看到的栈板距离 （m）
 	const float maxRange = 3.2;								//最远能看到的栈板距离 （m）
 	const float pitchAngle = -6.5 * M_PI / 180.0f;			//摄像头俯仰角 （°）
@@ -786,19 +784,6 @@ void Camera::getResult(vector<float> &result) {
 	}
 
 	cout << "Totle Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
-
-	//可视化
-	if (SEE_RESULT) {
-		boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("Normals"));
-		viewer->setBackgroundColor(0, 0, 0);
-		pcl::PointCloud <pcl::PointXYZRGB>::Ptr colored_cloud = reg.getColoredCloud();
-		viewer->addPointCloud<pcl::PointXYZRGB>(colored_cloud, "color");
-		viewer->addCoordinateSystem();//红色是X轴，绿色是Y轴，蓝色是Z
-		while (!viewer->wasStopped()) {
-			viewer->spinOnce(100);
-			boost::this_thread::sleep(boost::posix_time::microseconds(100000));
-		}
-	}
 }
 
 ////////////////////////////////////////

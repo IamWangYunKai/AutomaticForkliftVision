@@ -29,7 +29,7 @@ int main() {
 	pcl::PCDWriter writer;
 	reader.read("4.pcd", *input_cloud);
 	cout << "Reading Using Time : " << (double)clock() / CLOCKS_PER_SEC << "s" << endl;
-	//根据摄像头内参坐标转换
+	//根据摄像头外参坐标转换
 	Eigen::Affine3f transform = Eigen::Affine3f::Identity();
 	float theta_x = - 20 * M_PI / 180.0f;
 	transform.rotate(Eigen::AngleAxisf(theta_x, Eigen::Vector3f::UnitX()));
