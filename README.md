@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/sj4dmcxhkt4sb8ax?svg=true)](https://ci.appveyor.com/project/WangYunkai/automaticforkliftvision)
+
 # Introduction
 
 In this repository, we want to automate forklifts .
